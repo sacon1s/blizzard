@@ -414,11 +414,23 @@ h2 { margin: 0; font: clamp(30px, 3.6vw, 42px)/1.1 var(--font-display); letter-s
    (node tools/uci-match.js). Замеры против Stockfish (node tools/sf-match.js) лежат в data/strength-<версия>.json,
    а файлы для скачивания — в dist/site/downloads; и то и другое подставляет build.js. */
 window.BLIZZARD_SITE = {
-  current: '0.3',
+  current: '0.4',
   // Репозиторий GitHub с релизами, например 'nick/blizzard'. Можно не заполнять, если сайт на ник.github.io.
   github: '',
-  downloads: {"windows":{"href":"downloads/blizzard-0.3-windows.zip","size":"33.4 MB","bytes":34980269},"universal":{"href":"downloads/blizzard-0.3-universal.zip","size":"1.1 MB","bytes":1203093}},
+  downloads: {"windows":{"href":"downloads/blizzard-0.4-windows.zip","size":"33.4 MB","bytes":34982939},"universal":{"href":"downloads/blizzard-0.4-universal.zip","size":"1.2 MB","bytes":1205962}},
   versions: [
+    {
+      v: '0.4',
+      date: '2026-10-18',
+      title: 'Twice the search-scored data, faster network, smarter search',
+      vsPrev: { elo: 186, lo: 146, hi: 231, games: 200 },
+      changes: [
+        '<b>Network fine-tuned on 6.6 million search-scored positions</b>, more than twice as many as 0.3. Each position is scored by a short Stockfish 19 search; the network was picked by its error on positions it never saw in training.',
+        '<b>Faster network</b>: the first layer and the output now run on WebAssembly SIMD, eight numbers per instruction, both in the browser and in the UCI engine. That is 30–45% more positions per second, with exactly the same evaluations as before.',
+        '<b>Search</b>: correction history, which adjusts the evaluation by how far off it was in positions with the same pawn structure; capture history for ordering captures; follow-up history that looks at the move two plies back; the full time is used when a fixed time per move is set.',
+        '<b>Tested step by step</b> against 0.3: the search changes alone gave about +60 Elo, together with the new network +186 (+117 =64 −19 in 200 games).',
+      ],
+    },
     {
       v: '0.3',
       date: '2026-10-17',
@@ -459,7 +471,7 @@ window.BLIZZARD_SITE = {
     },
   ],
 };
-(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]}});
+(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]}});
 
 </script>
 <script>
