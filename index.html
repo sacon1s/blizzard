@@ -414,11 +414,23 @@ h2 { margin: 0; font: clamp(30px, 3.6vw, 42px)/1.1 var(--font-display); letter-s
    (node tools/uci-match.js). Замеры против Stockfish (node tools/sf-match.js) лежат в data/strength-<версия>.json,
    а файлы для скачивания — в dist/site/downloads; и то и другое подставляет build.js. */
 window.BLIZZARD_SITE = {
-  current: '0.2',
+  current: '0.3',
   // Репозиторий GitHub с релизами, например 'nick/blizzard'. Можно не заполнять, если сайт на ник.github.io.
   github: '',
-  downloads: {"windows":{"href":"downloads/blizzard-0.2-windows.zip","size":"32.8 MB","bytes":34404028},"universal":{"href":"downloads/blizzard-0.2-universal.zip","size":"0.6 MB","bytes":627284}},
+  downloads: {"windows":{"href":"downloads/blizzard-0.3-windows.zip","size":"33.4 MB","bytes":34980269},"universal":{"href":"downloads/blizzard-0.3-universal.zip","size":"1.1 MB","bytes":1203093}},
   versions: [
+    {
+      v: '0.3',
+      date: '2026-10-17',
+      title: 'King-aware network, trained on search scores',
+      vsPrev: { elo: 72, lo: 32, hi: 114, games: 200 },
+      changes: [
+        '<b>The network knows where its king is</b>: 3072 inputs in four sets by the position of its own king, with the board mirrored when the king is on the e–h files. Still 2×128 neurons, and a cache makes king moves cheap, so it is as fast as the 0.2 network.',
+        '<b>Trained in two stages</b>: first on 12.1 million positions with Stockfish 19’s static evaluation (now including games of 2200+ players), then fine-tuned on 3 million positions scored by a short Stockfish search, which sees threats and tactics a static evaluation misses.',
+        '<b>Search</b>: singular extensions; quiet moves that hang a piece are skipped at low depth.',
+        '<b>Tested step by step</b> against 0.2: more data alone and the king-aware inputs alone gave about 0 Elo; search scores gave +47, the search changes +30, together +72.',
+      ],
+    },
     {
       v: '0.2',
       date: '2026-10-17',
@@ -447,7 +459,7 @@ window.BLIZZARD_SITE = {
     },
   ],
 };
-(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]}});
+(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]}});
 
 </script>
 <script>
