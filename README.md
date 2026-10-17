@@ -12,7 +12,7 @@
 <p align="center">
   <a href="../../releases/latest"><b>Download</b></a>
   &emsp;&emsp;
-  <a href="https://YOUR-NAME.github.io/blizzard/play.html"><b>Play in the browser</b></a>
+  <a href="https://sacon1s.github.io/blizzard/play.html"><b>Play in the browser</b></a>
   &emsp;&emsp;
   <a href="#strength"><b>Strength</b></a>
   &emsp;&emsp;
@@ -129,7 +129,7 @@ other: they are always measured under the same conditions.
 
 ## Play in the browser
 
-The [website](https://YOUR-NAME.github.io/blizzard/) runs Blizzard right in the page, with nothing to install.
+The [website](https://sacon1s.github.io/blizzard/) runs Blizzard right in the page, with nothing to install.
 
 - **Play** against ten levels, from Beginner (about 400 Elo) to Maximum. An evaluation bar,
   win/draw/loss odds, a hint and a coach that explains every move.
