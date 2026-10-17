@@ -404,7 +404,7 @@ h2 { margin: 0; font: clamp(30px, 3.6vw, 42px)/1.1 var(--font-display); letter-s
 <footer class="foot">
   <div class="wrap foot-inner">
     <div class="foot-brand"><svg class="logo"><use href="#logo"/></svg><span>Blizzard <span id="footVer">0.2</span></span></div>
-    <p>The engine is written from scratch in JavaScript with no third-party libraries. The browser version includes Stockfish 19 for matches and analysis (stockfish.js build, <a href="LICENSES/Stockfish-GPLv3.txt">GPLv3</a>, source code at <a href="https://github.com/official-stockfish/Stockfish">github.com/official-stockfish</a>). Pieces: cburnett set (Colin M. L. Burnett). Opening names: lichess-org/chess-openings (CC0). Fonts: Golos Text and Russo One, <a href="LICENSES/font-Golos-Text-OFL.txt">OFL</a>.</p>
+    <p>The engine is written from scratch in JavaScript with no third-party libraries. For matches and analysis the website runs Stockfish 19 as a separate program from the <code>stockfish/</code> folder: the stockfish.js lite build, <a href="stockfish/Copying.txt">GPLv3</a>, source code at <a href="https://github.com/nmrugg/stockfish.js">stockfish.js</a> and <a href="https://github.com/official-stockfish/Stockfish">Stockfish</a>. The two engines talk only through UCI commands; Blizzard contains no Stockfish code, and Blizzard's network was trained on positions that Stockfish evaluated. Pieces: cburnett set (Colin M. L. Burnett). Opening names: lichess-org/chess-openings (CC0). Fonts: Golos Text and Russo One, <a href="LICENSES/font-Golos-Text-OFL.txt">OFL</a>.</p>
   </div>
 </footer>
 

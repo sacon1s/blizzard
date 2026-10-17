@@ -181,6 +181,17 @@ Release notes for each version are on the [releases page](../../releases).
 
 Pieces: the cburnett set by Colin M. L. Burnett. Fonts: Golos Text and Russo One (SIL Open Font
 License). Opening names: [lichess-org/chess-openings](https://github.com/lichess-org/chess-openings) (CC0).
-The website includes Stockfish 19 (stockfish.js lite, GPLv3) for matches and reviews, so the website is
-distributed under GPLv3; the license texts are in [`LICENSES`](LICENSES). The engine archives contain no
-Stockfish code. `blizzard.exe` includes the Node.js runtime (MIT).
+`blizzard.exe` includes the Node.js runtime (MIT).
+
+### About Stockfish
+
+The website uses Stockfish 19 for matches against Blizzard and for game review. It is a separate
+program: the files in the [`stockfish`](stockfish) folder are the stockfish.js lite build, licensed under
+GPLv3, with the license text and links to the source code
+([stockfish.js](https://github.com/nmrugg/stockfish.js), [Stockfish](https://github.com/official-stockfish/Stockfish))
+next to them. The page starts it in its own background thread and talks to it only through UCI
+commands, the way a chess program talks to an engine. Blizzard contains no Stockfish code, and the
+engine downloads contain no Stockfish at all.
+
+Blizzard's network was trained on positions that Stockfish 19 evaluated. Stockfish was a teacher,
+not a part of the engine.
