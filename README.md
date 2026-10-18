@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Version 0.5" src="https://img.shields.io/badge/version-0.5-ffffff?style=for-the-badge&labelColor=000000"></a>
+  <a href="../../releases/latest"><img alt="Version 0.6" src="https://img.shields.io/badge/version-0.6-ffffff?style=for-the-badge&labelColor=000000"></a>
   <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffffff?style=for-the-badge&labelColor=000000">
   <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-ffffff?style=for-the-badge&labelColor=000000">
-  <img alt="+53 Elo over 0.4" src="https://img.shields.io/badge/vs%200.4-%2B53%20Elo-ffffff?style=for-the-badge&labelColor=000000">
+  <img alt="+182 Elo over 0.5" src="https://img.shields.io/badge/vs%200.5-%2B182%20Elo-ffffff?style=for-the-badge&labelColor=000000">
 </p>
 
 <p align="center">
@@ -21,7 +21,8 @@
 
 <br>
 
-Blizzard is a chess engine written from scratch in JavaScript, with no third-party code. It plugs into
+Blizzard is a chess engine written from scratch, with no third-party code: the search runs in WebAssembly
+compiled from C, everything around it is JavaScript. It plugs into
 Arena, Cute Chess, En Croissant and any other program that speaks UCI, the same way Stockfish does.
 Or you can play it in the browser, at ten levels from beginner to full strength, and let it review
 your games from chess.com and lichess.
@@ -38,8 +39,8 @@ positions scored by a short Stockfish search.
 
 | | File | Size | What you need |
 |---|---|---|---|
-| **Windows** | [`blizzard-0.5-windows.zip`](../../releases/latest) | 34 MB | Windows 10 or 11, 64-bit. Nothing to install. |
-| **macOS, Linux, others** | [`blizzard-0.5-universal.zip`](../../releases/latest) | 1.9 MB | [Node.js](https://nodejs.org) 18 or newer |
+| **Windows** | [`blizzard-0.6-windows.zip`](../../releases/latest) | 34 MB | Windows 10 or 11, 64-bit. Nothing to install. |
+| **macOS, Linux, others** | [`blizzard-0.6-universal.zip`](../../releases/latest) | 1.9 MB | [Node.js](https://nodejs.org) 18 or newer |
 
 Unpack the archive into any folder. Blizzard has no board of its own: double-clicking `blizzard.exe`
 only opens a console window where the engine waits for commands. Add it to a chess program instead.
@@ -91,6 +92,7 @@ the same book openings, each played with both colors.
 
 | Match | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|
+| **0.6** vs 0.5 | 25 | +12 =13 −0 | 74.0% | **+182** (+102 to +285) |
 | **0.5** vs 0.4 | 100 | +40 =35 −25 | 57.5% | **+53** (−2 to +110) |
 | **0.4** vs 0.3 | 200 | +117 =64 −19 | 74.5% | **+186** (+146 to +231) |
 | **0.3** vs 0.2 | 200 | +91 =59 −50 | 60.3% | **+72** (+32 to +114) |
@@ -99,7 +101,7 @@ the same book openings, each played with both colors.
 And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 <p align="center">
-  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%." width="100%">
+  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%." width="100%">
 </p>
 
 <details>
@@ -108,6 +110,9 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 | Version | Opponent | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|---|
+| 0.6 | Stockfish 2800 | 40 | +27 =5 −8 | 74% | +179 (+80 to +319) |
+| 0.6 | Stockfish 3000 | 40 | +22 =13 −5 | 71% | +158 (+73 to +265) |
+| 0.6 | Stockfish 3190 | 40 | +11 =14 −15 | 45% | −35 (−126 to +52) |
 | 0.5 | Stockfish 2800 | 40 | +21 =10 −9 | 65% | +108 (+17 to +216) |
 | 0.5 | Stockfish 3000 | 40 | +5 =14 −21 | 30% | −147 (−250 to −64) |
 | 0.4 | Stockfish 2800 | 40 | +21 =7 −12 | 61% | +80 (−17 to +190) |
@@ -122,7 +127,7 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 | 0.1 | Stockfish 2500 | 60 | +49 =5 −6 | 86% | +313 (+218 to +474) |
 | 0.1 | Stockfish 2800 | 60 | +8 =6 −46 | 18% | −260 (−394 to −170) |
 
-All games at 0.2 s per move, 40 games per point for 0.4 and 0.5, 60 for earlier versions. Stockfish here is the single-threaded browser build (stockfish.js lite).
+All games at 0.2 s per move, 40 games per point from 0.4 on, 60 for earlier versions. Stockfish here is the single-threaded browser build (stockfish.js lite).
 
 </details>
 
@@ -143,6 +148,10 @@ The [website](https://sacon1s.github.io/blizzard/) runs Blizzard right in the pa
   games that ends with an Elo difference and its 95% interval.
 
 ## How it works
+
+**Core.** Since 0.6 the search runs in WebAssembly compiled from C (`core/blizzard.c`, about 50 KB): bitboards
+with magic attack tables, fully legal move generation, and the network on SIMD. It searches 1.2–1.7 million
+positions per second, three to four times as many as the JavaScript search that stays as a fallback.
 
 **Search.** Iterative deepening with principal variation search and aspiration windows, a
 transposition table, null-move pruning, late move reductions, futility and late move pruning,
@@ -176,7 +185,7 @@ Search-based scores gave +47. In 0.4, the search changes alone gave about +60, a
 twice as many search-scored positions brought the total to +186. In 0.5, a network with twice the
 neurons, fine-tuned on 11.4 million positions (3.6 million of them scored by the full Stockfish 16),
 gave +53. ProbCut, history pruning, double singular extensions and a second network layer all lost Elo
-and were left out.
+and were left out. In 0.6, the new core alone was worth about +182.
 
 **Opening book.** 17,902 positions from 238,000 grandmaster games, with about 3,400 opening names.
 
@@ -184,6 +193,7 @@ and were left out.
 
 | Version | What changed | vs previous |
 |---|---|---|
+| **0.6** | Search core in WebAssembly, 3–4 times faster | +182 Elo |
 | **0.5** | Twice the neurons (2×256), fine-tuned on 11.4 M search-scored positions | +53 Elo |
 | **0.4** | Network fine-tuned on 6.6 M search-scored positions; WebAssembly SIMD; correction and capture history | +186 Elo |
 | **0.3** | King-aware network, fine-tuned on Stockfish search scores; singular extensions | +72 Elo |

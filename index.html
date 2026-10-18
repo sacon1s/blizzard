@@ -507,11 +507,22 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
    (node tools/uci-match.js). Замеры против Stockfish (node tools/sf-match.js) лежат в data/strength-<версия>.json,
    а файлы для скачивания — в dist/site/downloads; и то и другое подставляет build.js. */
 window.BLIZZARD_SITE = {
-  current: '0.5',
+  current: '0.6',
   // Репозиторий GitHub с релизами, например 'nick/blizzard'. Можно не заполнять, если сайт на ник.github.io.
   github: 'sacon1s/blizzard',
-  downloads: {"windows":{"href":"downloads/blizzard-0.5-windows.zip","size":"34.1 MB","bytes":35750565},"universal":{"href":"downloads/blizzard-0.5-universal.zip","size":"1.9 MB","bytes":1973938}},
+  downloads: {"windows":{"href":"downloads/blizzard-0.6-windows.zip","size":"34.1 MB","bytes":35780275},"universal":{"href":"downloads/blizzard-0.6-universal.zip","size":"1.9 MB","bytes":2003011}},
   versions: [
+    {
+      v: '0.6',
+      date: '2026-10-18',
+      title: 'A new search core in WebAssembly, three to four times faster',
+      vsPrev: { elo: 182, lo: 102, hi: 285, games: 25 },
+      changes: [
+        '<b>A new search core</b>, written in C and compiled to WebAssembly: bitboards with magic move generation, only legal moves, the network on SIMD. It searches 1.2–1.7 million positions per second instead of 0.36 million, in the browser and in the UCI engine alike.',
+        '<b>The same evaluation, only faster</b>: on 2,000 test positions the network gives exactly the same numbers as the JavaScript version, and move generation matches the reference counts on six standard test positions. The JavaScript search stays as a fallback for browsers without WebAssembly and for the hand-written evaluation.',
+        '<b>Tested and left out</b>: a transposition table with buckets of four entries (−17 Elo in 286 games).',
+      ],
+    },
     {
       v: '0.5',
       date: '2026-10-18',
@@ -577,7 +588,7 @@ window.BLIZZARD_SITE = {
     },
   ],
 };
-(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]},"0.5":{"version":"0.5","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":10,"l":9,"elo":108,"lo":17,"hi":216},{"sf":3000,"games":40,"w":5,"d":14,"l":21,"elo":-147,"lo":-250,"hi":-64}]}});
+(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]},"0.5":{"version":"0.5","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":10,"l":9,"elo":108,"lo":17,"hi":216},{"sf":3000,"games":40,"w":5,"d":14,"l":21,"elo":-147,"lo":-250,"hi":-64}]},"0.6":{"version":"0.6","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3000,"matches":[{"sf":2800,"games":40,"w":27,"d":5,"l":8,"elo":179,"lo":80,"hi":319},{"sf":3000,"games":40,"w":22,"d":13,"l":5,"elo":158,"lo":73,"hi":265},{"sf":3190,"games":40,"w":11,"d":14,"l":15,"elo":-35,"lo":-126,"hi":52}]}});
 
 </script>
 <script>
