@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Version 0.4" src="https://img.shields.io/badge/version-0.4-a9d4ff?style=for-the-badge&labelColor=1c2333"></a>
-  <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffb533?style=for-the-badge&labelColor=1c2333">
-  <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-9eabc6?style=for-the-badge&labelColor=1c2333">
-  <img alt="+186 Elo over 0.3" src="https://img.shields.io/badge/vs%200.3-%2B186%20Elo-4fae5a?style=for-the-badge&labelColor=1c2333">
+  <a href="../../releases/latest"><img alt="Version 0.5" src="https://img.shields.io/badge/version-0.5-ffffff?style=for-the-badge&labelColor=000000"></a>
+  <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffffff?style=for-the-badge&labelColor=000000">
+  <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-ffffff?style=for-the-badge&labelColor=000000">
+  <img alt="+53 Elo over 0.4" src="https://img.shields.io/badge/vs%200.4-%2B53%20Elo-ffffff?style=for-the-badge&labelColor=000000">
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@ Or you can play it in the browser, at ten levels from beginner to full strength,
 your games from chess.com and lichess.
 
 Positions are evaluated by a small neural network that knows where each king stands. It was trained
-on 12 million positions from master games evaluated by Stockfish 19, then fine-tuned on 6.6 million
+on 12 million positions from master games evaluated by Stockfish 19, then fine-tuned on 11.4 million
 positions scored by a short Stockfish search.
 
 <p align="center">
@@ -38,8 +38,8 @@ positions scored by a short Stockfish search.
 
 | | File | Size | What you need |
 |---|---|---|---|
-| **Windows** | [`blizzard-0.4-windows.zip`](../../releases/latest) | 33 MB | Windows 10 or 11, 64-bit. Nothing to install. |
-| **macOS, Linux, others** | [`blizzard-0.4-universal.zip`](../../releases/latest) | 1.2 MB | [Node.js](https://nodejs.org) 18 or newer |
+| **Windows** | [`blizzard-0.5-windows.zip`](../../releases/latest) | 34 MB | Windows 10 or 11, 64-bit. Nothing to install. |
+| **macOS, Linux, others** | [`blizzard-0.5-universal.zip`](../../releases/latest) | 1.9 MB | [Node.js](https://nodejs.org) 18 or newer |
 
 Unpack the archive into any folder. Blizzard has no board of its own: double-clicking `blizzard.exe`
 only opens a console window where the engine waits for commands. Add it to a chess program instead.
@@ -91,6 +91,7 @@ the same book openings, each played with both colors.
 
 | Match | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|
+| **0.5** vs 0.4 | 100 | +40 =35 −25 | 57.5% | **+53** (−2 to +110) |
 | **0.4** vs 0.3 | 200 | +117 =64 −19 | 74.5% | **+186** (+146 to +231) |
 | **0.3** vs 0.2 | 200 | +91 =59 −50 | 60.3% | **+72** (+32 to +114) |
 | **0.2** vs 0.1 | 200 | +137 =32 −31 | 76.5% | **+205** (+158 to +260) |
@@ -98,7 +99,7 @@ the same book openings, each played with both colors.
 And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 <p align="center">
-  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%." width="100%">
+  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%." width="100%">
 </p>
 
 <details>
@@ -107,6 +108,8 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 | Version | Opponent | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|---|
+| 0.5 | Stockfish 2800 | 40 | +21 =10 −9 | 65% | +108 (+17 to +216) |
+| 0.5 | Stockfish 3000 | 40 | +5 =14 −21 | 30% | −147 (−250 to −64) |
 | 0.4 | Stockfish 2800 | 40 | +21 =7 −12 | 61% | +80 (−17 to +190) |
 | 0.4 | Stockfish 3000 | 40 | +4 =13 −23 | 26% | −179 (−290 to −95) |
 | 0.3 | Stockfish 2800 | 60 | +24 =8 −28 | 47% | −23 (−108 to +59) |
@@ -119,7 +122,7 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 | 0.1 | Stockfish 2500 | 60 | +49 =5 −6 | 86% | +313 (+218 to +474) |
 | 0.1 | Stockfish 2800 | 60 | +8 =6 −46 | 18% | −260 (−394 to −170) |
 
-All games at 0.2 s per move, 40 games per point for 0.4 and 60 for earlier versions. Stockfish here is the single-threaded browser build (stockfish.js lite).
+All games at 0.2 s per move, 40 games per point for 0.4 and 0.5, 60 for earlier versions. Stockfish here is the single-threaded browser build (stockfish.js lite).
 
 </details>
 
@@ -148,7 +151,7 @@ killers, history, countermoves, capture history and continuation history one and
 A correction history adjusts the static evaluation by how far off it was in earlier positions with
 the same pawn structure.
 
-**Evaluation.** An NNUE-style network, 3072 → 2×128 → 1. Each side sees the board from its own
+**Evaluation.** An NNUE-style network, 3072 → 2×256 → 1. Each side sees the board from its own
 perspective, through one of four input sets chosen by where its own king stands, with the board
 mirrored when that king is on the e–h files. The first layer runs on 16-bit integers and is updated
 incrementally as moves are made. When a king moves into a different set, a cache rebuilds that half
@@ -161,7 +164,7 @@ run on WebAssembly SIMD, eight numbers per instruction, in the browser and in th
 flowchart LR
     A["12.1 M positions<br>from master games"] --> B["Stockfish 19<br>static evaluation"]
     B --> C["pretrain<br>28 epochs"]
-    D["6.6 M positions"] --> E["short Stockfish search<br>1000 nodes each"]
+    D["11.4 M positions"] --> E["short Stockfish search<br>1000 nodes each"]
     C --> F["fine-tune"]
     E --> F
     F --> G["engine/net.js"]
@@ -170,7 +173,10 @@ flowchart LR
 Every step was checked with a match against the previous version. In 0.3, more data alone gave about
 0 Elo, and so did king-aware inputs on static evaluations, even though the training error fell by 5–6%.
 Search-based scores gave +47. In 0.4, the search changes alone gave about +60, and fine-tuning on
-twice as many search-scored positions brought the total to +186.
+twice as many search-scored positions brought the total to +186. In 0.5, a network with twice the
+neurons, fine-tuned on 11.4 million positions (3.6 million of them scored by the full Stockfish 16),
+gave +53. ProbCut, history pruning, double singular extensions and a second network layer all lost Elo
+and were left out.
 
 **Opening book.** 17,902 positions from 238,000 grandmaster games, with about 3,400 opening names.
 
@@ -178,6 +184,7 @@ twice as many search-scored positions brought the total to +186.
 
 | Version | What changed | vs previous |
 |---|---|---|
+| **0.5** | Twice the neurons (2×256), fine-tuned on 11.4 M search-scored positions | +53 Elo |
 | **0.4** | Network fine-tuned on 6.6 M search-scored positions; WebAssembly SIMD; correction and capture history | +186 Elo |
 | **0.3** | King-aware network, fine-tuned on Stockfish search scores; singular extensions | +72 Elo |
 | **0.2** | Neural network evaluation, trained on 5.5 million positions | +205 Elo |
