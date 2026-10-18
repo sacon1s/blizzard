@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Version 0.6" src="https://img.shields.io/badge/version-0.6-ffffff?style=for-the-badge&labelColor=000000"></a>
+  <a href="../../releases/latest"><img alt="Version 0.7" src="https://img.shields.io/badge/version-0.7-ffffff?style=for-the-badge&labelColor=000000"></a>
   <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffffff?style=for-the-badge&labelColor=000000">
   <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-ffffff?style=for-the-badge&labelColor=000000">
-  <img alt="+182 Elo over 0.5" src="https://img.shields.io/badge/vs%200.5-%2B182%20Elo-ffffff?style=for-the-badge&labelColor=000000">
+  <img alt="+64 Elo over 0.6" src="https://img.shields.io/badge/vs%200.6-%2B64%20Elo-ffffff?style=for-the-badge&labelColor=000000">
 </p>
 
 <p align="center">
@@ -39,8 +39,8 @@ positions scored by a short Stockfish search.
 
 | | File | Size | What you need |
 |---|---|---|---|
-| **Windows** | [`blizzard-0.6-windows.zip`](../../releases/latest) | 34 MB | Windows 10 or 11, 64-bit. Nothing to install. |
-| **macOS, Linux, others** | [`blizzard-0.6-universal.zip`](../../releases/latest) | 1.9 MB | [Node.js](https://nodejs.org) 18 or newer |
+| **Windows** | [`blizzard-0.7-windows.zip`](../../releases/latest) | 34 MB | Windows 10 or 11, 64-bit. Nothing to install. |
+| **macOS, Linux, others** | [`blizzard-0.7-universal.zip`](../../releases/latest) | 1.9 MB | [Node.js](https://nodejs.org) 18 or newer |
 
 Unpack the archive into any folder. Blizzard has no board of its own: double-clicking `blizzard.exe`
 only opens a console window where the engine waits for commands. Add it to a chess program instead.
@@ -92,6 +92,7 @@ the same book openings, each played with both colors.
 
 | Match | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|
+| **0.7** vs 0.6 | 409 | +155 =174 −80 | 59.2% | **+64** (+39 to +90) |
 | **0.6** vs 0.5 | 25 | +12 =13 −0 | 74.0% | **+182** (+102 to +285) |
 | **0.5** vs 0.4 | 100 | +40 =35 −25 | 57.5% | **+53** (−2 to +110) |
 | **0.4** vs 0.3 | 200 | +117 =64 −19 | 74.5% | **+186** (+146 to +231) |
@@ -101,7 +102,7 @@ the same book openings, each played with both colors.
 And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 <p align="center">
-  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%." width="100%">
+  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%, 0.7 scores 81%." width="100%">
 </p>
 
 <details>
@@ -110,6 +111,9 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 | Version | Opponent | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|---|
+| 0.7 | Stockfish 2800 | 40 | +30 =5 −5 | 81% | +255 (+151 to +425) |
+| 0.7 | Stockfish 3000 | 40 | +14 =19 −7 | 59% | +61 (−15 to +144) |
+| 0.7 | Stockfish 3190 | 40 | +10 =20 −10 | 50% | 0 (−77 to +77) |
 | 0.6 | Stockfish 2800 | 40 | +27 =5 −8 | 74% | +179 (+80 to +319) |
 | 0.6 | Stockfish 3000 | 40 | +22 =13 −5 | 71% | +158 (+73 to +265) |
 | 0.6 | Stockfish 3190 | 40 | +11 =14 −15 | 45% | −35 (−126 to +52) |
@@ -157,8 +161,8 @@ positions per second, three to four times as many as the JavaScript search that 
 transposition table, null-move pruning, late move reductions, futility and late move pruning,
 singular extensions, and a quiescence search with static exchange evaluation. Moves are ordered by
 killers, history, countermoves, capture history and continuation history one and two plies back.
-A correction history adjusts the static evaluation by how far off it was in earlier positions with
-the same pawn structure.
+Correction histories adjust the static evaluation by how far off it was in earlier positions with
+the same pawn structure, and since 0.7 with the same placement of each side's pieces.
 
 **Evaluation.** An NNUE-style network, 3072 → 2×256 → 1. Each side sees the board from its own
 perspective, through one of four input sets chosen by where its own king stands, with the board
@@ -193,6 +197,7 @@ and were left out. In 0.6, the new core alone was worth about +182.
 
 | Version | What changed | vs previous |
 |---|---|---|
+| **0.7** | Evaluation corrected by piece placement; fast self-play testing and tuning | +64 Elo |
 | **0.6** | Search core in WebAssembly, 3–4 times faster | +182 Elo |
 | **0.5** | Twice the neurons (2×256), fine-tuned on 11.4 M search-scored positions | +53 Elo |
 | **0.4** | Network fine-tuned on 6.6 M search-scored positions; WebAssembly SIMD; correction and capture history | +186 Elo |

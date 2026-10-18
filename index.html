@@ -507,11 +507,22 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
    (node tools/uci-match.js). Замеры против Stockfish (node tools/sf-match.js) лежат в data/strength-<версия>.json,
    а файлы для скачивания — в dist/site/downloads; и то и другое подставляет build.js. */
 window.BLIZZARD_SITE = {
-  current: '0.6',
+  current: '0.7',
   // Репозиторий GitHub с релизами, например 'nick/blizzard'. Можно не заполнять, если сайт на ник.github.io.
   github: 'sacon1s/blizzard',
-  downloads: {"windows":{"href":"downloads/blizzard-0.6-windows.zip","size":"34.1 MB","bytes":35780275},"universal":{"href":"downloads/blizzard-0.6-universal.zip","size":"1.9 MB","bytes":2003011}},
+  downloads: {"windows":{"href":"downloads/blizzard-0.7-windows.zip","size":"34.1 MB","bytes":35781608},"universal":{"href":"downloads/blizzard-0.7-universal.zip","size":"1.9 MB","bytes":2004495}},
   versions: [
+    {
+      v: '0.7',
+      date: '2026-10-18',
+      title: 'The evaluation learns from its mistakes, piece by piece',
+      vsPrev: { elo: 64, lo: 39, hi: 90, games: 409 },
+      changes: [
+        '<b>Correction by piece placement</b>: since 0.4 the search has remembered how far the evaluation was off in positions with the same pawn structure. Now it also remembers this for the placement of each side’s pieces, and corrects the evaluation by both. +64 Elo in 409 games against 0.6.',
+        '<b>Fast testing</b>: two copies of the engine play inside one process, about 3,600 short games an hour on two cores, and search parameters change without rebuilding the core. Automatic tuning of parameters (SPSA) is included.',
+        '<b>Tested and left out</b>: ProbCut (−16 Elo in 600 games), double and negative singular extensions (−7), pruning quiet moves with a bad history (+3), 16 automatically tuned search parameters (−8), and twice the weight for the new correction (+4).',
+      ],
+    },
     {
       v: '0.6',
       date: '2026-10-18',
@@ -588,7 +599,7 @@ window.BLIZZARD_SITE = {
     },
   ],
 };
-(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]},"0.5":{"version":"0.5","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":10,"l":9,"elo":108,"lo":17,"hi":216},{"sf":3000,"games":40,"w":5,"d":14,"l":21,"elo":-147,"lo":-250,"hi":-64}]},"0.6":{"version":"0.6","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3000,"matches":[{"sf":2800,"games":40,"w":27,"d":5,"l":8,"elo":179,"lo":80,"hi":319},{"sf":3000,"games":40,"w":22,"d":13,"l":5,"elo":158,"lo":73,"hi":265},{"sf":3190,"games":40,"w":11,"d":14,"l":15,"elo":-35,"lo":-126,"hi":52}]}});
+(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]},"0.5":{"version":"0.5","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":10,"l":9,"elo":108,"lo":17,"hi":216},{"sf":3000,"games":40,"w":5,"d":14,"l":21,"elo":-147,"lo":-250,"hi":-64}]},"0.6":{"version":"0.6","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3000,"matches":[{"sf":2800,"games":40,"w":27,"d":5,"l":8,"elo":179,"lo":80,"hi":319},{"sf":3000,"games":40,"w":22,"d":13,"l":5,"elo":158,"lo":73,"hi":265},{"sf":3190,"games":40,"w":11,"d":14,"l":15,"elo":-35,"lo":-126,"hi":52}]},"0.7":{"version":"0.7","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":40,"w":30,"d":5,"l":5,"elo":255,"lo":151,"hi":425},{"sf":3000,"games":40,"w":14,"d":19,"l":7,"elo":61,"lo":-15,"hi":144},{"sf":3190,"games":40,"w":10,"d":20,"l":10,"elo":0,"lo":-77,"hi":77}]}});
 
 </script>
 <script>
