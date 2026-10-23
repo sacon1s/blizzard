@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Version 0.7" src="https://img.shields.io/badge/version-0.7-ffffff?style=for-the-badge&labelColor=000000"></a>
+  <a href="../../releases/latest"><img alt="Version 0.8" src="https://img.shields.io/badge/version-0.8-ffffff?style=for-the-badge&labelColor=000000"></a>
   <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffffff?style=for-the-badge&labelColor=000000">
   <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-ffffff?style=for-the-badge&labelColor=000000">
-  <img alt="+64 Elo over 0.6" src="https://img.shields.io/badge/vs%200.6-%2B64%20Elo-ffffff?style=for-the-badge&labelColor=000000">
+  <img alt="+143 Elo over 0.7" src="https://img.shields.io/badge/vs%200.7-%2B143%20Elo-ffffff?style=for-the-badge&labelColor=000000">
 </p>
 
 <p align="center">
@@ -21,8 +21,8 @@
 
 <br>
 
-Blizzard is a chess engine written from scratch, with no third-party code: the search runs in WebAssembly
-compiled from C, everything around it is JavaScript. It plugs into
+Blizzard is a chess engine written from scratch, with no third-party code: the search is written in C and runs
+as a native program on several cores, or in the browser as WebAssembly; everything around it is JavaScript. It plugs into
 Arena, Cute Chess, En Croissant and any other program that speaks UCI, the same way Stockfish does.
 Or you can play it in the browser, at ten levels from beginner to full strength, and let it review
 your games from chess.com and lichess.
@@ -39,8 +39,8 @@ positions scored by a short Stockfish search.
 
 | | File | Size | What you need |
 |---|---|---|---|
-| **Windows** | [`blizzard-0.7-windows.zip`](../../releases/latest) | 34 MB | Windows 10 or 11, 64-bit. Nothing to install. |
-| **macOS, Linux, others** | [`blizzard-0.7-universal.zip`](../../releases/latest) | 1.9 MB | [Node.js](https://nodejs.org) 18 or newer |
+| **Windows** | [`blizzard-0.8-windows.zip`](../../releases/latest) | 2.9 MB | Windows 10 or 11, 64-bit. Nothing to install. |
+| **Linux, macOS, others** | [`blizzard-0.8-universal.zip`](../../releases/latest) | 5.5 MB | Linux: nothing to install. macOS and others: [Node.js](https://nodejs.org) 18 or newer |
 
 Unpack the archive into any folder. Blizzard has no board of its own: double-clicking `blizzard.exe`
 only opens a console window where the engine waits for commands. Add it to a chess program instead.
@@ -92,6 +92,8 @@ the same book openings, each played with both colors.
 
 | Match | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|
+| **0.8** vs 0.7, 2 cores | 100 | +43 =53 −4 | 69.5% | **+143** (+100 to +191) |
+| **0.8** vs 0.7, 1 core | 29 | +10 =17 −2 | 63.8% | +98 (+22 to +185) |
 | **0.7** vs 0.6 | 409 | +155 =174 −80 | 59.2% | **+64** (+39 to +90) |
 | **0.6** vs 0.5 | 25 | +12 =13 −0 | 74.0% | **+182** (+102 to +285) |
 | **0.5** vs 0.4 | 100 | +40 =35 −25 | 57.5% | **+53** (−2 to +110) |
@@ -102,7 +104,7 @@ the same book openings, each played with both colors.
 And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 <p align="center">
-  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%, 0.7 scores 81%." width="100%">
+  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%, 0.7 scores 81%, 0.8 scores 93%." width="100%">
 </p>
 
 <details>
@@ -111,6 +113,8 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 | Version | Opponent | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|---|
+| 0.8 (2 cores) | Stockfish 2800 | 30 | +26 =4 −0 | 93% | +458 (+334 to +798) |
+| 0.8 (2 cores) | Stockfish 3190 | 30 | +11 =14 −5 | 60% | +70 (−18 to +169) |
 | 0.7 | Stockfish 2800 | 40 | +30 =5 −5 | 81% | +255 (+151 to +425) |
 | 0.7 | Stockfish 3000 | 40 | +14 =19 −7 | 59% | +61 (−15 to +144) |
 | 0.7 | Stockfish 3190 | 40 | +10 =20 −10 | 50% | 0 (−77 to +77) |
@@ -153,9 +157,10 @@ The [website](https://sacon1s.github.io/blizzard/) runs Blizzard right in the pa
 
 ## How it works
 
-**Core.** Since 0.6 the search runs in WebAssembly compiled from C (`core/blizzard.c`, about 50 KB): bitboards
-with magic attack tables, fully legal move generation, and the network on SIMD. It searches 1.2–1.7 million
-positions per second, three to four times as many as the JavaScript search that stays as a fallback.
+**Core.** The search is written in C (`core/blizzard.c`): bitboards with magic attack tables, fully legal move
+generation, and the network on SIMD. Since 0.8 the downloadable engine is a native program (`core/native.c`,
+AVX2 or SSE2) that searches on several cores at once (Lazy SMP, option `Threads`): about 1.6 million positions
+per second per core. In the browser the same core runs as WebAssembly, about 1.3 million per second.
 
 **Search.** Iterative deepening with principal variation search and aspiration windows, a
 transposition table, null-move pruning, late move reductions, futility and late move pruning,
@@ -169,7 +174,7 @@ perspective, through one of four input sets chosen by where its own king stands,
 mirrored when that king is on the e–h files. The first layer runs on 16-bit integers and is updated
 incrementally as moves are made. When a king moves into a different set, a cache rebuilds that half
 of the layer from the squares that changed since it was last used. These updates and the output layer
-run on WebAssembly SIMD, eight numbers per instruction, in the browser and in the UCI engine alike.
+run on SIMD: 16 numbers per instruction with AVX2 in the native engine, eight with WebAssembly SIMD in the browser.
 
 **Training.** A NumPy trainer, step by step:
 
@@ -197,6 +202,7 @@ and were left out. In 0.6, the new core alone was worth about +182.
 
 | Version | What changed | vs previous |
 |---|---|---|
+| **0.8** | Native engine for Windows and Linux, several cores at once; evaluations on Stockfish's scale | +143 Elo on 2 cores |
 | **0.7** | Evaluation corrected by piece placement; fast self-play testing and tuning | +64 Elo |
 | **0.6** | Search core in WebAssembly, 3–4 times faster | +182 Elo |
 | **0.5** | Twice the neurons (2×256), fine-tuned on 11.4 M search-scored positions | +53 Elo |
@@ -211,7 +217,7 @@ Release notes for each version are on the [releases page](../../releases).
 
 Pieces: the cburnett set by Colin M. L. Burnett. Fonts: Golos Text and Russo One (SIL Open Font
 License). Opening names: [lichess-org/chess-openings](https://github.com/lichess-org/chess-openings) (CC0).
-`blizzard.exe` includes the Node.js runtime (MIT).
+The Windows programs include the mingw-w64 runtime; the Linux programs, the musl C library (MIT).
 
 ### About Stockfish
 

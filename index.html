@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Blizzard</title>
-<meta name="description" content="Blizzard is a chess engine with a neural network trained on positions from master games. Download it for Windows, macOS and Linux, or play it in your browser.">
+<meta name="description" content="Blizzard is a chess engine written from scratch, with a neural network trained on positions scored by Stockfish. Download it for Windows, macOS and Linux, or play it in your browser.">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%22-50 -50 100 100%22%3E%3Ccircle r=%2250%22 fill=%22%23000%22/%3E%3Cg fill=%22%23fff%22 transform=%22scale%281.04%29%22%3E%3Cpath d=%22M -4.82 -11.41 C -6.86 -17.56 -8.91 -22.15 -11.58 -26.08 L -14.36 -27.39 L -13.20 -29.14 L -16.40 -30.77 L -15.24 -32.56 L -18.13 -34.75 C -18.74 -37.97 -18.23 -41.06 -18.18 -44.19 L -12.54 -40.74 C -8.12 -41.08 -2.23 -40.24 3.67 -37.07 C 7.19 -35.01 9.38 -33.04 10.04 -30.89 C 10.62 -28.74 9.15 -27.50 7.07 -27.98 L 2.11 -29.28 C 1.59 -26.86 2.63 -24.26 4.31 -21.72 C 5.74 -18.91 5.70 -14.89 4.38 -11.59 Z%22 transform=%22rotate%280%29%22/%3E%3Cpath d=%22M -4.82 -11.41 C -6.86 -17.56 -8.91 -22.15 -11.58 -26.08 L -14.36 -27.39 L -13.20 -29.14 L -16.40 -30.77 L -15.24 -32.56 L -18.13 -34.75 C -18.74 -37.97 -18.23 -41.06 -18.18 -44.19 L -12.54 -40.74 C -8.12 -41.08 -2.23 -40.24 3.67 -37.07 C 7.19 -35.01 9.38 -33.04 10.04 -30.89 C 10.62 -28.74 9.15 -27.50 7.07 -27.98 L 2.11 -29.28 C 1.59 -26.86 2.63 -24.26 4.31 -21.72 C 5.74 -18.91 5.70 -14.89 4.38 -11.59 Z%22 transform=%22rotate%2860%29%22/%3E%3Cpath d=%22M -4.82 -11.41 C -6.86 -17.56 -8.91 -22.15 -11.58 -26.08 L -14.36 -27.39 L -13.20 -29.14 L -16.40 -30.77 L -15.24 -32.56 L -18.13 -34.75 C -18.74 -37.97 -18.23 -41.06 -18.18 -44.19 L -12.54 -40.74 C -8.12 -41.08 -2.23 -40.24 3.67 -37.07 C 7.19 -35.01 9.38 -33.04 10.04 -30.89 C 10.62 -28.74 9.15 -27.50 7.07 -27.98 L 2.11 -29.28 C 1.59 -26.86 2.63 -24.26 4.31 -21.72 C 5.74 -18.91 5.70 -14.89 4.38 -11.59 Z%22 transform=%22rotate%28120%29%22/%3E%3Cpath d=%22M -4.82 -11.41 C -6.86 -17.56 -8.91 -22.15 -11.58 -26.08 L -14.36 -27.39 L -13.20 -29.14 L -16.40 -30.77 L -15.24 -32.56 L -18.13 -34.75 C -18.74 -37.97 -18.23 -41.06 -18.18 -44.19 L -12.54 -40.74 C -8.12 -41.08 -2.23 -40.24 3.67 -37.07 C 7.19 -35.01 9.38 -33.04 10.04 -30.89 C 10.62 -28.74 9.15 -27.50 7.07 -27.98 L 2.11 -29.28 C 1.59 -26.86 2.63 -24.26 4.31 -21.72 C 5.74 -18.91 5.70 -14.89 4.38 -11.59 Z%22 transform=%22rotate%28180%29%22/%3E%3Cpath d=%22M -4.82 -11.41 C -6.86 -17.56 -8.91 -22.15 -11.58 -26.08 L -14.36 -27.39 L -13.20 -29.14 L -16.40 -30.77 L -15.24 -32.56 L -18.13 -34.75 C -18.74 -37.97 -18.23 -41.06 -18.18 -44.19 L -12.54 -40.74 C -8.12 -41.08 -2.23 -40.24 3.67 -37.07 C 7.19 -35.01 9.38 -33.04 10.04 -30.89 C 10.62 -28.74 9.15 -27.50 7.07 -27.98 L 2.11 -29.28 C 1.59 -26.86 2.63 -24.26 4.31 -21.72 C 5.74 -18.91 5.70 -14.89 4.38 -11.59 Z%22 transform=%22rotate%28240%29%22/%3E%3Cpath d=%22M -4.82 -11.41 C -6.86 -17.56 -8.91 -22.15 -11.58 -26.08 L -14.36 -27.39 L -13.20 -29.14 L -16.40 -30.77 L -15.24 -32.56 L -18.13 -34.75 C -18.74 -37.97 -18.23 -41.06 -18.18 -44.19 L -12.54 -40.74 C -8.12 -41.08 -2.23 -40.24 3.67 -37.07 C 7.19 -35.01 9.38 -33.04 10.04 -30.89 C 10.62 -28.74 9.15 -27.50 7.07 -27.98 L 2.11 -29.28 C 1.59 -26.86 2.63 -24.26 4.31 -21.72 C 5.74 -18.91 5.70 -14.89 4.38 -11.59 Z%22 transform=%22rotate%28300%29%22/%3E%3C/g%3E%3Cpolygon points=%227.45,4.30 0.00,8.60 -7.45,4.30 -7.45,-4.30 -0.00,-8.60 7.45,-4.30%22 fill=%22%23000%22 stroke=%22%23fff%22 stroke-width=%222.4%22/%3E%3C/svg%3E">
 <style>
@@ -142,6 +142,11 @@ code { font: 500 .9em/1 ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospac
 @keyframes fade-in { from { opacity: 0; } }
 .mark { position: absolute; left: 50%; top: 50%; width: min(52vh, 74vw); aspect-ratio: 1; transform: translate(-50%, -50%); pointer-events: none; }
 .mark svg { width: 100%; height: 100%; overflow: visible; }
+
+.mark svg { animation: mark-spin 40s linear infinite; }
+@keyframes mark-spin { to { transform: rotate(360deg); } }
+.brand:hover .logo { animation: mark-spin 1.6s cubic-bezier(.5, 0, .2, 1) 1; }
+@media (prefers-reduced-motion: reduce) { .mark svg, .brand:hover .logo { animation: none; } }
 .mark .petal { fill: #fff; }
 .mark .eye { fill: #000; }
 .mark .core { fill: #000; stroke: #fff; stroke-width: 1.8; stroke-linejoin: round; }
@@ -369,7 +374,7 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
         </div>
         <div class="mark-text" id="markText">
           <h2 class="mark-title">Written from scratch.<br>Trained in the storm.</h2>
-          <p>Blizzard is a chess engine in plain JavaScript. Its neural network learned from <span data-fact="positions">11 million</span> positions of master games, each one scored by Stockfish. It plugs into Arena, Cute Chess and En Croissant, or plays right here in your browser.</p>
+          <p>Blizzard is a chess engine written from scratch in C and JavaScript. Its neural network learned from <span data-fact="positions">11 million</span> positions, each one scored by Stockfish. It plugs into Arena, Cute Chess and En Croissant, or plays right here in your browser.</p>
           <div class="cta">
             <a class="btn solid big" data-dl="windows" href="#download">
               <svg><use href="#h-down"/></svg>
@@ -397,17 +402,17 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
           <div class="dl-row">
             <h3>Windows 10 and 11</h3>
             <div class="dl-about">
-              <p><code>blizzard.exe</code> has everything built in, so there is nothing to install.</p>
+              <p><code>blizzard.exe</code> has everything built in, so there is nothing to install. It thinks on several processor cores at once.</p>
               <p class="fine">Windows may say “Unknown publisher” on first launch, because the file has no paid code-signing certificate. Click “More info”, then “Run anyway”.</p>
               <p class="fine preview-note" data-dl-note="windows" hidden></p>
             </div>
             <a class="btn solid" data-dl="windows" href="#download"><svg><use href="#h-down"/></svg><span data-dl-label="windows">Download</span></a>
           </div>
           <div class="dl-row">
-            <h3>macOS, Linux and others</h3>
+            <h3>Linux, macOS and others</h3>
             <div class="dl-about">
-              <p>A single <code>blizzard-uci.js</code> file. Needs Node.js 18 or newer: run it with <code>node blizzard-uci.js</code>.</p>
-              <p class="fine">Also works on Windows if you already have Node.js.</p>
+              <p>A ready program for Linux, <code>blizzard-linux</code>, with nothing to install. For macOS and other systems, the single file <code>blizzard-uci.js</code>: run it with <code>node blizzard-uci.js</code> (Node.js 18 or newer).</p>
+              <p class="fine">The Node.js version thinks on one core.</p>
               <p class="fine preview-note" data-dl-note="universal" hidden></p>
             </div>
             <a class="btn line" data-dl="universal" href="#download"><svg><use href="#h-down"/></svg><span data-dl-label="universal">Download</span></a>
@@ -507,11 +512,23 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
    (node tools/uci-match.js). Замеры против Stockfish (node tools/sf-match.js) лежат в data/strength-<версия>.json,
    а файлы для скачивания — в dist/site/downloads; и то и другое подставляет build.js. */
 window.BLIZZARD_SITE = {
-  current: '0.7',
+  current: '0.8',
   // Репозиторий GitHub с релизами, например 'nick/blizzard'. Можно не заполнять, если сайт на ник.github.io.
   github: 'sacon1s/blizzard',
-  downloads: {"windows":{"href":"downloads/blizzard-0.7-windows.zip","size":"34.1 MB","bytes":35781608},"universal":{"href":"downloads/blizzard-0.7-universal.zip","size":"1.9 MB","bytes":2004495}},
+  downloads: {"windows":{"href":"downloads/blizzard-0.8-windows.zip","size":"2.9 MB","bytes":3037950},"universal":{"href":"downloads/blizzard-0.8-universal.zip","size":"5.5 MB","bytes":5796010}},
   versions: [
+    {
+      v: '0.8',
+      date: '2026-10-23',
+      title: 'A native engine that thinks on several cores',
+      vsPrev: { elo: 143, lo: 100, hi: 191, games: 100 },
+      changes: [
+        '<b>Native programs for Windows and Linux</b>: the downloadable engine is the C core compiled to machine code, with AVX2 for the network, instead of JavaScript in Node.js. About 20% faster on one core, and the Windows download is about 2.9 MB instead of 34 MB.',
+        '<b>Several cores at once</b>: the new Threads option runs the search on several cores that share one transposition table. By default Blizzard takes half of the cores, up to 8. On two cores: +143 Elo against 0.7 in 100 games (+98 on one core).',
+        '<b>Evaluations on Stockfish’s scale</b>: compared with a deep Stockfish analysis on 1,411 positions, Blizzard pointed to the same side in 99% of them, but its numbers ran about 8% larger. Shown evaluations, in the engine and in game review, are now scaled to match.',
+        '<b>Website</b>: the logo slowly turns on the home page.',
+      ],
+    },
     {
       v: '0.7',
       date: '2026-10-18',
@@ -599,7 +616,7 @@ window.BLIZZARD_SITE = {
     },
   ],
 };
-(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]},"0.5":{"version":"0.5","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":10,"l":9,"elo":108,"lo":17,"hi":216},{"sf":3000,"games":40,"w":5,"d":14,"l":21,"elo":-147,"lo":-250,"hi":-64}]},"0.6":{"version":"0.6","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3000,"matches":[{"sf":2800,"games":40,"w":27,"d":5,"l":8,"elo":179,"lo":80,"hi":319},{"sf":3000,"games":40,"w":22,"d":13,"l":5,"elo":158,"lo":73,"hi":265},{"sf":3190,"games":40,"w":11,"d":14,"l":15,"elo":-35,"lo":-126,"hi":52}]},"0.7":{"version":"0.7","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":40,"w":30,"d":5,"l":5,"elo":255,"lo":151,"hi":425},{"sf":3000,"games":40,"w":14,"d":19,"l":7,"elo":61,"lo":-15,"hi":144},{"sf":3190,"games":40,"w":10,"d":20,"l":10,"elo":0,"lo":-77,"hi":77}]}});
+(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]},"0.5":{"version":"0.5","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":10,"l":9,"elo":108,"lo":17,"hi":216},{"sf":3000,"games":40,"w":5,"d":14,"l":21,"elo":-147,"lo":-250,"hi":-64}]},"0.6":{"version":"0.6","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3000,"matches":[{"sf":2800,"games":40,"w":27,"d":5,"l":8,"elo":179,"lo":80,"hi":319},{"sf":3000,"games":40,"w":22,"d":13,"l":5,"elo":158,"lo":73,"hi":265},{"sf":3190,"games":40,"w":11,"d":14,"l":15,"elo":-35,"lo":-126,"hi":52}]},"0.7":{"version":"0.7","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":40,"w":30,"d":5,"l":5,"elo":255,"lo":151,"hi":425},{"sf":3000,"games":40,"w":14,"d":19,"l":7,"elo":61,"lo":-15,"hi":144},{"sf":3190,"games":40,"w":10,"d":20,"l":10,"elo":0,"lo":-77,"hi":77}]},"0.8":{"version":"0.8","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":30,"w":26,"d":4,"l":0,"elo":458,"lo":334,"hi":798},{"sf":3190,"games":30,"w":11,"d":14,"l":5,"elo":70,"lo":-18,"hi":169}]}});
 
 </script>
 <script>
@@ -726,7 +743,7 @@ const GUIS = [
   { name: 'Cute Chess', path: '<b>Tools</b> → <b>Settings</b> → <b>Engines</b> tab → <b>+</b> button → pick <code>blizzard.exe</code> in the <b>Command</b> field.' },
   { name: 'En Croissant', path: '<b>Engines</b> section → <b>Add new</b> → <b>Local</b> → pick <code>blizzard.exe</code>.' },
   { name: 'Nibbler', path: '<b>Engine</b> menu → <b>Choose engine…</b> → pick <code>blizzard.exe</code>.' },
-  { name: 'macOS, Linux', path: 'Enter the command <code>node /path/to/blizzard-uci.js</code>. If the program insists on a file, put a small script with that command next to it and make it executable.' },
+  { name: 'Linux, macOS', path: 'Linux: make <code>blizzard-linux</code> executable (<code>chmod +x</code>) and pick it like any UCI engine. macOS: enter the command <code>node /path/to/blizzard-uci.js</code>; if the program insists on a file, put a small script with that command next to it and make it executable.' },
 ];
 function segmented(box, labels, onPick) {
   box.innerHTML = '';
