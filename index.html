@@ -989,7 +989,7 @@ window.addEventListener('resize', onScroll);
   const c = $('snow');
   const ctx = c.getContext('2d');
   if (!ctx) return;
-  let W = 0, H = 0, flakes = [], running = false, last = 0, t = 0, visible = true;
+  let W = 0, H = 0, flakes = [], gusts = [], running = false, last = 0, t = 0, visible = true;
   const mk = (anyY) => {
     const z = Math.random();
     return { x: Math.random() * (W + 300) - 150, y: anyY ? Math.random() * H : -12, z, r: 0.6 + z * 2.2, v: 30 + z * 110, a: 0.25 + z * 0.65, ph: Math.random() * 6.3 };
@@ -1001,18 +1001,26 @@ window.addEventListener('resize', onScroll);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const n = Math.min(520, Math.round(W * H / 3400));
     flakes = Array.from({ length: n }, () => mk(true));
+    // на первом экране — настоящая метель: ещё столько же снега, который несёт вправо
+    gusts = Array.from({ length: Math.round(n * 0.9) }, () => mk(true));
     if (!running) draw(0);
   }
   function draw(dt) {
     t += dt;
     // порывы ветра: сильнее в начале, стихают, когда логотип собран
     const calm = 1 - 0.65 * assembled;
-    const wind = (110 + 80 * Math.sin(t * 0.42) + 35 * Math.sin(t * 1.7)) * calm;
+    // первый экран (пока слово не рассыпалось) — шквал вправо с порывами
+    const storm = Math.max(0, 1 - progress / 0.24);
+    const gust = 0.8 + 0.22 * Math.sin(t * 0.9) + 0.12 * Math.sin(t * 2.6 + 1.3);
+    const wind = (110 + 80 * Math.sin(t * 0.42) + 35 * Math.sin(t * 1.7)) * calm + storm * 900 * gust;
     const cx = W / 2, cy = H / 2, swirl = assembled * (1 - assembled) * 4; // вихрь к центру, пока кони собираются
     ctx.clearRect(0, 0, W, H);
     ctx.lineCap = 'round';
-    for (const f of flakes) {
-      let vx = wind * (0.3 + f.z) + Math.sin(t * 1.6 + f.ph) * 14, vy = f.v * (0.55 + 0.45 * calm);
+    const all = storm > 0.02 ? flakes.concat(gusts) : flakes;
+    for (let i = 0; i < all.length; i++) {
+      const f = all[i], extra = i >= flakes.length;
+      let vx = wind * (0.3 + f.z) + Math.sin(t * 1.6 + f.ph) * 14, vy = f.v * (0.55 + 0.45 * calm) * (1 - 0.45 * storm);
+      if (storm > 0.02) vy += Math.sin(t * 2.4 + f.ph * 3) * 70 * storm * (0.4 + f.z); // завихрения: снег не летит по линейке
       if (swirl > 0.01) {
         const dx = f.x - cx, dy = f.y - cy, d = Math.hypot(dx, dy) + 40;
         vx += (-dy / d * 220 - dx / d * 60) * swirl;
@@ -1020,11 +1028,11 @@ window.addEventListener('resize', onScroll);
       }
       f.x += vx * dt; f.y += vy * dt;
       if (f.y > H + 12 || f.x > W + 150 || f.x < -160 || f.y < -40) Object.assign(f, mk(false), f.x > W + 150 ? { x: -60, y: Math.random() * H } : {});
-      ctx.strokeStyle = `rgba(255, 255, 255, ${f.a})`;
+      ctx.strokeStyle = `rgba(255, 255, 255, ${extra ? f.a * storm : f.a})`;
       ctx.lineWidth = f.r;
       ctx.beginPath(); ctx.moveTo(f.x, f.y);
-      if (f.z < 0.4) ctx.lineTo(f.x + 0.01, f.y); // дальние снежинки — точки
-      else { const k = 0.014 + f.z * 0.032; ctx.lineTo(f.x - vx * k, f.y - vy * k); } // ближние — росчерки ветра
+      if (f.z < 0.4 && storm < 0.3) ctx.lineTo(f.x + 0.01, f.y); // дальние снежинки — точки
+      else { const k = (0.014 + f.z * 0.032) * (1 + storm * (0.2 + 0.9 * ((f.ph * 7.13) % 1))); ctx.lineTo(f.x - vx * k, f.y - vy * k); } // росчерки ветра разной длины
       ctx.stroke();
     }
     // когда появился текст, за ним снег почти стихает — чтобы читалось легко
