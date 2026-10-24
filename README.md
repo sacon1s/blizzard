@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Version 0.8" src="https://img.shields.io/badge/version-0.8-ffffff?style=for-the-badge&labelColor=000000"></a>
+  <a href="../../releases/latest"><img alt="Version 0.9" src="https://img.shields.io/badge/version-0.9-ffffff?style=for-the-badge&labelColor=000000"></a>
   <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffffff?style=for-the-badge&labelColor=000000">
   <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-ffffff?style=for-the-badge&labelColor=000000">
-  <img alt="+143 Elo over 0.7" src="https://img.shields.io/badge/vs%200.7-%2B143%20Elo-ffffff?style=for-the-badge&labelColor=000000">
+  <img alt="+30 Elo over 0.8" src="https://img.shields.io/badge/vs%200.8-%2B30%20Elo-ffffff?style=for-the-badge&labelColor=000000">
 </p>
 
 <p align="center">
@@ -28,8 +28,8 @@ Or you can play it in the browser, at ten levels from beginner to full strength,
 your games from chess.com and lichess.
 
 Positions are evaluated by a small neural network that knows where each king stands. It was trained
-on 12 million positions from master games evaluated by Stockfish 19, then fine-tuned on 11.4 million
-positions scored by a short Stockfish search.
+on 12 million positions from master games evaluated by Stockfish 19, then on 48 million positions scored
+by Stockfish searches, 36.8 million of them from Blizzard's own games.
 
 <p align="center">
   <img src="assets/review.png" alt="Blizzard reviewing the Opera Game: 10. Nxb5 is marked brilliant, with accuracy for both players and a rating for every move" width="100%">
@@ -39,8 +39,8 @@ positions scored by a short Stockfish search.
 
 | | File | Size | What you need |
 |---|---|---|---|
-| **Windows** | [`blizzard-0.8-windows.zip`](../../releases/latest) | 2.9 MB | Windows 10 or 11, 64-bit. Nothing to install. |
-| **Linux, macOS, others** | [`blizzard-0.8-universal.zip`](../../releases/latest) | 5.5 MB | Linux: nothing to install. macOS and others: [Node.js](https://nodejs.org) 18 or newer |
+| **Windows** | [`blizzard-0.9-windows.zip`](../../releases/latest) | 2.9 MB | Windows 10 or 11, 64-bit. Nothing to install. |
+| **Linux, macOS, others** | [`blizzard-0.9-universal.zip`](../../releases/latest) | 5.5 MB | Linux: nothing to install. macOS and others: [Node.js](https://nodejs.org) 18 or newer |
 
 Unpack the archive into any folder. Blizzard has no board of its own: double-clicking `blizzard.exe`
 only opens a console window where the engine waits for commands. Add it to a chess program instead.
@@ -92,6 +92,7 @@ the same book openings, each played with both colors.
 
 | Match | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|
+| **0.9** vs 0.8, 1 core | 200 | +54 =109 −37 | 54.2% | **+30** (−3 to +62) |
 | **0.8** vs 0.7, 2 cores | 100 | +43 =53 −4 | 69.5% | **+143** (+100 to +191) |
 | **0.8** vs 0.7, 1 core | 29 | +10 =17 −2 | 63.8% | +98 (+22 to +185) |
 | **0.7** vs 0.6 | 409 | +155 =174 −80 | 59.2% | **+64** (+39 to +90) |
@@ -104,7 +105,7 @@ the same book openings, each played with both colors.
 And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 <p align="center">
-  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%, 0.7 scores 81%, 0.8 scores 93%." width="100%">
+  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%, 0.7 scores 81%, 0.8 scores 93%, 0.9 scores 90%." width="100%">
 </p>
 
 <details>
@@ -113,6 +114,8 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 | Version | Opponent | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|---|
+| 0.9 (2 cores) | Stockfish 2800 | 30 | +25 =4 −1 | 90% | +382 (+257 to +729) |
+| 0.9 (2 cores) | Stockfish 3190 | 30 | +10 =16 −4 | 60% | +70 (−12 to +161) |
 | 0.8 (2 cores) | Stockfish 2800 | 30 | +26 =4 −0 | 93% | +458 (+334 to +798) |
 | 0.8 (2 cores) | Stockfish 3190 | 30 | +11 =14 −5 | 60% | +70 (−18 to +169) |
 | 0.7 | Stockfish 2800 | 40 | +30 =5 −5 | 81% | +255 (+151 to +425) |
@@ -185,7 +188,10 @@ flowchart LR
     D["11.4 M positions"] --> E["short Stockfish search<br>1000 nodes each"]
     C --> F["fine-tune"]
     E --> F
-    F --> G["engine/net.js"]
+    H["36.8 M positions<br>from Blizzard's own games"] --> I["Stockfish 17<br>5000 nodes each"]
+    F --> J["fine-tune again<br>on 48 M positions"]
+    I --> J
+    J --> G["engine/net.js"]
 ```
 
 Every step was checked with a match against the previous version. In 0.3, more data alone gave about
@@ -194,7 +200,9 @@ Search-based scores gave +47. In 0.4, the search changes alone gave about +60, a
 twice as many search-scored positions brought the total to +186. In 0.5, a network with twice the
 neurons, fine-tuned on 11.4 million positions (3.6 million of them scored by the full Stockfish 16),
 gave +53. ProbCut, history pruning, double singular extensions and a second network layer all lost Elo
-and were left out. In 0.6, the new core alone was worth about +182.
+and were left out. In 0.6, the new core alone was worth about +182. In 0.9, 36.8 million positions from Blizzard's own
+games, scored by Stockfish 17 at 5,000 nodes, gave +30 at equal time; a network twice as wide was
+59 Elo stronger per position but a third slower, and lost at equal time.
 
 **Opening book.** 17,902 positions from 238,000 grandmaster games, with about 3,400 opening names.
 
@@ -202,6 +210,7 @@ and were left out. In 0.6, the new core alone was worth about +182.
 
 | Version | What changed | vs previous |
 |---|---|---|
+| **0.9** | Network fine-tuned on 48 M positions, 36.8 M from Blizzard's own games scored by Stockfish 17 | +30 Elo |
 | **0.8** | Native engine for Windows and Linux, several cores at once; evaluations on Stockfish's scale | +143 Elo on 2 cores |
 | **0.7** | Evaluation corrected by piece placement; fast self-play testing and tuning | +64 Elo |
 | **0.6** | Search core in WebAssembly, 3–4 times faster | +182 Elo |
@@ -217,7 +226,7 @@ Release notes for each version are on the [releases page](../../releases).
 
 Pieces: the cburnett set by Colin M. L. Burnett. Fonts: Golos Text and Russo One (SIL Open Font
 License). Opening names: [lichess-org/chess-openings](https://github.com/lichess-org/chess-openings) (CC0).
-The Windows programs include the mingw-w64 runtime; the Linux programs, the musl C library (MIT).
+Move sounds: Kenney (CC0). The Windows programs include the mingw-w64 runtime; the Linux programs, the musl C library (MIT).
 
 ### About Stockfish
 

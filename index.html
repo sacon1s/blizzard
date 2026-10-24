@@ -374,7 +374,7 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
         </div>
         <div class="mark-text" id="markText">
           <h2 class="mark-title">Written from scratch.<br>Trained in the storm.</h2>
-          <p>Blizzard is a chess engine written from scratch in C and JavaScript. Its neural network learned from <span data-fact="positions">11 million</span> positions, each one scored by Stockfish. It plugs into Arena, Cute Chess and En Croissant, or plays right here in your browser.</p>
+          <p>Blizzard is a chess engine written from scratch in C and JavaScript. Its neural network learned from <span data-fact="positions">48 million</span> positions, each one scored by Stockfish. It plugs into Arena, Cute Chess and En Croissant, or plays right here in your browser.</p>
           <div class="cta">
             <a class="btn solid big" data-dl="windows" href="#download">
               <svg><use href="#h-down"/></svg>
@@ -512,11 +512,23 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
    (node tools/uci-match.js). Замеры против Stockfish (node tools/sf-match.js) лежат в data/strength-<версия>.json,
    а файлы для скачивания — в dist/site/downloads; и то и другое подставляет build.js. */
 window.BLIZZARD_SITE = {
-  current: '0.8',
+  current: '0.9',
   // Репозиторий GitHub с релизами, например 'nick/blizzard'. Можно не заполнять, если сайт на ник.github.io.
   github: 'sacon1s/blizzard',
-  downloads: {"windows":{"href":"downloads/blizzard-0.8-windows.zip","size":"2.9 MB","bytes":3037950},"universal":{"href":"downloads/blizzard-0.8-universal.zip","size":"5.5 MB","bytes":5796010}},
+  downloads: {"windows":{"href":"downloads/blizzard-0.9-windows.zip","size":"2.9 MB","bytes":3036434},"universal":{"href":"downloads/blizzard-0.9-universal.zip","size":"5.5 MB","bytes":5790654}},
   versions: [
+    {
+      v: '0.9',
+      date: '2026-10-24',
+      title: 'A network that learned from Blizzard’s own games',
+      vsPrev: { elo: 30, lo: -3, hi: 62, games: 200 },
+      changes: [
+        '<b>A network trained on 48 million positions</b>: 36.8 million come from Blizzard playing itself on a home six-core PC for about 18 hours, every position scored by Stockfish 17 with a search five times deeper than before. The network keeps its size, so the engine is just as fast; its error on held-out positions is 16% lower, and its evaluations are closer to a deep Stockfish analysis: 0.75 pawns off on average instead of 0.84.',
+        '<b>Search</b>: moves get reduced a little more when the replies before them kept failing high (+20 Elo in 800 games).',
+        '<b>Website</b>: a real snowstorm on the first screen, move sounds, and arrows and highlighted squares drawn with the right mouse button.',
+        '<b>Tested and left out</b>: a network twice as wide was 59 Elo stronger at the same number of positions per move, but a third slower, and lost 12 Elo at the same time per move.',
+      ],
+    },
     {
       v: '0.8',
       date: '2026-10-23',
@@ -616,7 +628,7 @@ window.BLIZZARD_SITE = {
     },
   ],
 };
-(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]},"0.5":{"version":"0.5","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":10,"l":9,"elo":108,"lo":17,"hi":216},{"sf":3000,"games":40,"w":5,"d":14,"l":21,"elo":-147,"lo":-250,"hi":-64}]},"0.6":{"version":"0.6","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3000,"matches":[{"sf":2800,"games":40,"w":27,"d":5,"l":8,"elo":179,"lo":80,"hi":319},{"sf":3000,"games":40,"w":22,"d":13,"l":5,"elo":158,"lo":73,"hi":265},{"sf":3190,"games":40,"w":11,"d":14,"l":15,"elo":-35,"lo":-126,"hi":52}]},"0.7":{"version":"0.7","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":40,"w":30,"d":5,"l":5,"elo":255,"lo":151,"hi":425},{"sf":3000,"games":40,"w":14,"d":19,"l":7,"elo":61,"lo":-15,"hi":144},{"sf":3190,"games":40,"w":10,"d":20,"l":10,"elo":0,"lo":-77,"hi":77}]},"0.8":{"version":"0.8","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":30,"w":26,"d":4,"l":0,"elo":458,"lo":334,"hi":798},{"sf":3190,"games":30,"w":11,"d":14,"l":5,"elo":70,"lo":-18,"hi":169}]}});
+(function (S) { for (const v of window.BLIZZARD_SITE.versions) v.strength = v.strength || S[v.v] || null; })({"0.1":{"version":"0.1","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2500,"matches":[{"sf":2200,"games":60,"w":51,"d":2,"l":7,"elo":325,"lo":224,"hi":510},{"sf":2500,"games":60,"w":49,"d":5,"l":6,"elo":313,"lo":218,"hi":474},{"sf":2800,"games":60,"w":8,"d":6,"l":46,"elo":-260,"lo":-394,"hi":-170}]},"0.2":{"version":"0.2","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2500,"games":60,"w":57,"d":0,"l":3,"elo":512,"lo":372,"hi":798},{"sf":2800,"games":60,"w":14,"d":13,"l":33,"elo":-114,"lo":-203,"hi":-38},{"sf":3000,"games":60,"w":5,"d":11,"l":44,"elo":-269,"lo":-390,"hi":-187}]},"0.3":{"version":"0.3","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":60,"w":24,"d":8,"l":28,"elo":-23,"lo":-108,"hi":59},{"sf":3000,"games":60,"w":3,"d":18,"l":39,"elo":-241,"lo":-336,"hi":-169},{"sf":3190,"games":60,"w":2,"d":9,"l":49,"elo":-366,"lo":-523,"hi":-276}]},"0.4":{"version":"0.4","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":7,"l":12,"elo":80,"lo":-17,"hi":190},{"sf":3000,"games":40,"w":4,"d":13,"l":23,"elo":-179,"lo":-290,"hi":-95}]},"0.5":{"version":"0.5","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":2800,"matches":[{"sf":2800,"games":40,"w":21,"d":10,"l":9,"elo":108,"lo":17,"hi":216},{"sf":3000,"games":40,"w":5,"d":14,"l":21,"elo":-147,"lo":-250,"hi":-64}]},"0.6":{"version":"0.6","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3000,"matches":[{"sf":2800,"games":40,"w":27,"d":5,"l":8,"elo":179,"lo":80,"hi":319},{"sf":3000,"games":40,"w":22,"d":13,"l":5,"elo":158,"lo":73,"hi":265},{"sf":3190,"games":40,"w":11,"d":14,"l":15,"elo":-35,"lo":-126,"hi":52}]},"0.7":{"version":"0.7","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":40,"w":30,"d":5,"l":5,"elo":255,"lo":151,"hi":425},{"sf":3000,"games":40,"w":14,"d":19,"l":7,"elo":61,"lo":-15,"hi":144},{"sf":3190,"games":40,"w":10,"d":20,"l":10,"elo":0,"lo":-77,"hi":77}]},"0.8":{"version":"0.8","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":30,"w":26,"d":4,"l":0,"elo":458,"lo":334,"hi":798},{"sf":3190,"games":30,"w":11,"d":14,"l":5,"elo":70,"lo":-18,"hi":169}]},"0.9":{"version":"0.9","build":"Stockfish 19 (stockfish.js lite, single thread)","movetime":200,"headline":3190,"matches":[{"sf":2800,"games":30,"w":25,"d":4,"l":1,"elo":382,"lo":257,"hi":729},{"sf":3190,"games":30,"w":10,"d":16,"l":4,"elo":70,"lo":-12,"hi":161}]}});
 
 </script>
 <script>
