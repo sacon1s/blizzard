@@ -3,10 +3,10 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Version 0.9" src="https://img.shields.io/badge/version-0.9-ffffff?style=for-the-badge&labelColor=000000"></a>
+  <a href="../../releases/latest"><img alt="Version 1.0" src="https://img.shields.io/badge/version-1.0-ffffff?style=for-the-badge&labelColor=000000"></a>
   <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffffff?style=for-the-badge&labelColor=000000">
   <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-ffffff?style=for-the-badge&labelColor=000000">
-  <img alt="+30 Elo over 0.8" src="https://img.shields.io/badge/vs%200.8-%2B30%20Elo-ffffff?style=for-the-badge&labelColor=000000">
+  <img alt="+65 Elo over 0.9" src="https://img.shields.io/badge/vs%200.9-%2B65%20Elo-ffffff?style=for-the-badge&labelColor=000000">
 </p>
 
 <p align="center">
@@ -41,8 +41,8 @@ by Stockfish searches, 36.8 million of them from Blizzard's own games.
 
 | | File | Size | What you need |
 |---|---|---|---|
-| **Windows** | [`blizzard-0.9-windows.zip`](../../releases/latest) | 2.9 MB | Windows 10 or 11, 64-bit. Nothing to install. |
-| **Linux, macOS, others** | [`blizzard-0.9-universal.zip`](../../releases/latest) | 5.5 MB | Linux: nothing to install. macOS and others: [Node.js](https://nodejs.org) 18 or newer |
+| **Windows** | [`blizzard-1.0-windows.zip`](../../releases/latest) | 2.9 MB | Windows 10 or 11, 64-bit. Nothing to install. |
+| **Linux, macOS, others** | [`blizzard-1.0-universal.zip`](../../releases/latest) | 5.5 MB | Linux: nothing to install. macOS and others: [Node.js](https://nodejs.org) 18 or newer |
 
 Unpack the archive into any folder. Blizzard has no board of its own: double-clicking `blizzard.exe`
 only opens a console window where the engine waits for commands. Add it to a chess program instead.
@@ -94,6 +94,7 @@ the same book openings, each played with both colors.
 
 | Match | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|
+| **1.0** vs 0.9, 1 core | 200 | +64 =109 −27 | 59.3% | **+65** (+31 to +100) |
 | **0.9** vs 0.8, 1 core | 200 | +54 =109 −37 | 54.2% | **+30** (−3 to +62) |
 | **0.8** vs 0.7, 2 cores | 100 | +43 =53 −4 | 69.5% | **+143** (+100 to +191) |
 | **0.8** vs 0.7, 1 core | 29 | +10 =17 −2 | 63.8% | +98 (+22 to +185) |
@@ -107,7 +108,7 @@ the same book openings, each played with both colors.
 And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 <p align="center">
-  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%, 0.7 scores 81%, 0.8 scores 93%, 0.9 scores 90%." width="100%">
+  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%, 0.7 scores 81%, 0.8 scores 93%, 0.9 scores 90%, 1.0 scores 95%." width="100%">
 </p>
 
 <details>
@@ -116,6 +117,8 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 | Version | Opponent | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|---|
+| 1.0 (2 cores) | Stockfish 2800 | 30 | +27 =3 −0 | 95% | +512 (+375 to +798) |
+| 1.0 (2 cores) | Stockfish 3190 | 30 | +11 =16 −3 | 63% | +95 (+14 to +187) |
 | 0.9 (2 cores) | Stockfish 2800 | 30 | +25 =4 −1 | 90% | +382 (+257 to +729) |
 | 0.9 (2 cores) | Stockfish 3190 | 30 | +10 =16 −4 | 60% | +70 (−12 to +161) |
 | 0.8 (2 cores) | Stockfish 2800 | 30 | +26 =4 −0 | 93% | +458 (+334 to +798) |
@@ -170,9 +173,11 @@ per second per core. In the browser the same core runs as WebAssembly, about 1.3
 **Search.** Iterative deepening with principal variation search and aspiration windows, a
 transposition table, null-move pruning, late move reductions, futility and late move pruning,
 singular extensions, and a quiescence search with static exchange evaluation. Moves are ordered by
-killers, history, countermoves, capture history and continuation history one and two plies back.
+killers, history, countermoves, capture history and continuation history one, two and four plies back.
 Correction histories adjust the static evaluation by how far off it was in earlier positions with
-the same pawn structure, and since 0.7 with the same placement of each side's pieces.
+the same pawn structure, the same placement of each side's pieces (since 0.7) and the same last two
+moves (since 1.0). Since 1.0 the transposition table also remembers which positions were on the
+principal variation, and those are reduced less.
 
 **Evaluation.** An NNUE-style network, 3072 → 2×256 → 1. Each side sees the board from its own
 perspective, through one of four input sets chosen by where its own king stands, with the board
@@ -180,8 +185,9 @@ mirrored when that king is on the e–h files. The first layer runs on 16-bit in
 incrementally as moves are made. When a king moves into a different set, a cache rebuilds that half
 of the layer from the squares that changed since it was last used. These updates and the output layer
 run on SIMD: 16 numbers per instruction with AVX2 in the native engine, eight with WebAssembly SIMD in the browser.
+Since 1.0 the output layer works in integers too, with exactly the same result on every platform.
 
-**Training.** A NumPy trainer, step by step:
+**Training.** A NumPy trainer, step by step (since 1.0 a C trainer, `tools/nn/trainer.c`, does the same about six times faster):
 
 ```mermaid
 flowchart LR
@@ -204,7 +210,8 @@ neurons, fine-tuned on 11.4 million positions (3.6 million of them scored by the
 gave +53. ProbCut, history pruning, double singular extensions and a second network layer all lost Elo
 and were left out. In 0.6, the new core alone was worth about +182. In 0.9, 36.8 million positions from Blizzard's own
 games, scored by Stockfish 17 at 5,000 nodes, gave +30 at equal time; a network twice as wide was
-59 Elo stronger per position but a third slower, and lost at equal time.
+59 Elo stronger per position but a third slower, and lost at equal time. In 1.0, the search changes alone
+gave +44 at equal time, and fine-tuning the network once more on all positions added about +13.
 
 **Opening book.** 17,902 positions from 238,000 grandmaster games, with about 3,400 opening names.
 
@@ -212,6 +219,7 @@ games, scored by Stockfish 17 at 5,000 nodes, gave +30 at equal time; a network 
 
 | Version | What changed | vs previous |
 |---|---|---|
+| **1.0** | Stronger search; integer network output, a third faster; network fine-tuned further | +65 Elo |
 | **0.9** | Network fine-tuned on 48 M positions, 36.8 M from Blizzard's own games scored by Stockfish 17 | +30 Elo |
 | **0.8** | Native engine for Windows and Linux, several cores at once; evaluations on Stockfish's scale | +143 Elo on 2 cores |
 | **0.7** | Evaluation corrected by piece placement; fast self-play testing and tuning | +64 Elo |
