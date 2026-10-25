@@ -356,6 +356,7 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
   <defs>
     <symbol id="h-down" viewBox="0 0 24 24"><path d="M12 3.5v11.2m0 0-4.4-4.4m4.4 4.4 4.4-4.4M4.5 16v2.6a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="h-board" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 12h17M12 3.5v17" stroke="currentColor" stroke-width="1.8"/><path d="M7.7 7.7h.1M16.3 16.3h.1" stroke="currentColor" stroke-width="4.2" stroke-linecap="round"/></symbol>
+    <symbol id="h-review" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m15.3 15.3 5.2 5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="m7.8 10.7 1.9 1.9 3.3-3.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="h-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
   </defs>
 </svg>
@@ -370,7 +371,7 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
     <a role="tab" href="#compare" data-tab="compare" aria-selected="false">Compare</a>
   </nav>
   <a class="news" href="https://sacon1s.github.io/blizzard.chess/"><b>New</b><span>Blizzard Chess is out now</span></a>
-  <a class="btn line slim" href="play.html">Play</a>
+  <a class="btn line slim" href="review/">Review</a>
 </header>
 
 <main>
@@ -386,15 +387,15 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
         </div>
         <div class="mark-text" id="markText">
           <h2 class="mark-title">Written from scratch.<br>Trained in the storm.</h2>
-          <p>Blizzard is a chess engine written from scratch in C and JavaScript. Its neural network learned from <span data-fact="positions">48 million</span> positions, each one scored by Stockfish. It plugs into Arena, Cute Chess and En Croissant, or plays right here in your browser.</p>
+          <p>Blizzard is a chess engine written from scratch in C and JavaScript. Its neural network learned from <span data-fact="positions">48 million</span> positions, each one scored by Stockfish. It plugs into Arena, Cute Chess and En Croissant, and reviews your games right here in your browser.</p>
           <div class="cta">
             <a class="btn solid big" data-dl="windows" href="#download">
               <svg><use href="#h-down"/></svg>
               <span><b>Download for Windows</b><small data-dl-meta="windows">version</small></span>
             </a>
-            <a class="btn line big" href="play.html">
-              <svg><use href="#h-board"/></svg>
-              <span><b>Play in the browser</b><small>nothing to install</small></span>
+            <a class="btn line big" href="review/">
+              <svg><use href="#h-review"/></svg>
+              <span><b>Review your games</b><small>chess.com, lichess, Blizzard Chess</small></span>
             </a>
           </div>
         </div>
