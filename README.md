@@ -7,6 +7,7 @@
   <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffffff?style=for-the-badge&labelColor=000000">
   <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-ffffff?style=for-the-badge&labelColor=000000">
   <img alt="+65 Elo over 0.9" src="https://img.shields.io/badge/vs%200.9-%2B65%20Elo-ffffff?style=for-the-badge&labelColor=000000">
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-ffffff?style=for-the-badge&labelColor=000000"></a>
 </p>
 
 <p align="center">
@@ -67,11 +68,16 @@ only opens a console window where the engine waits for commands. Add it to a che
 
 | Option | Range | Default | What it does |
 |---|---|---|---|
-| `Hash` | 1–1024 | 32 | Transposition table size, in MB |
+| `Threads` | 1–256 | half of the cores, at most 8 | How many processor cores to think on |
+| `Hash` | 1–16384 | 64 | Transposition table size, in MB |
 | `MultiPV` | 1–10 | 1 | How many best lines to show |
 | `Skill Level` | 1–10 | 10 | 1 is a beginner, 10 is full strength |
-| `OwnBook` | on/off | on | Play the opening from the built-in grandmaster book |
-| `UseNNUE` | on/off | on | Off switches to the older hand-written evaluation |
+| `OwnBook` | on/off | off | Play the opening from the built-in grandmaster book |
+| `Move Overhead` | 0–5000 | 30 | Milliseconds kept in reserve for each move in games on time |
+| `Clear Hash` | button | | Forget everything learned in the current game |
+
+`blizzard-uci.js` for Node.js thinks on one core, has `Hash` 1–1024 (default 32) and one more option,
+`UseNNUE` (on by default; off switches to the older hand-written evaluation).
 
 Typed into the console window:
 
@@ -86,6 +92,15 @@ bench                            speed test
 ```
 
 </details>
+
+### For engine testers
+
+- UCI, no pondering. Windows: `blizzard.exe` (AVX2) and `blizzard-old-cpu.exe` (SSE2); Linux: `blizzard-linux` and
+  `blizzard-linux-old-cpu`, static builds.
+- `OwnBook` is off by default, so the engine plays from whatever book the GUI uses.
+- Handles `movestogo` (40/15 and other repeating controls), increments and sudden death. Checked at fast controls,
+  every game played to the end: 40 moves in 4 seconds, 2+0.02, 3+0, 1+0, and 4+0.04 on 2 threads. No losses on time.
+- `blizzard bench` prints the node count and speed.
 
 ## Strength
 
@@ -231,6 +246,12 @@ gave +44 at equal time, and fine-tuning the network once more on all positions a
 | **0.1** | First release: hand-written evaluation tuned on master games | |
 
 Release notes for each version are on the [releases page](../../releases).
+
+## License
+
+Blizzard, the engine and the website's own code, is released under the [MIT license](LICENSE). Author: sacon1s.
+Third-party parts keep their own licenses: the [`stockfish`](stockfish) folder is a separate program under GPLv3,
+the fonts are under the SIL Open Font License ([`LICENSES`](LICENSES)), and the pieces and sounds are listed under Credits.
 
 ## Credits
 
