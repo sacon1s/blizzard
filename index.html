@@ -335,6 +335,17 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
 .rm .mark-text { position: relative; opacity: 1; visibility: visible; left: auto; top: auto; bottom: auto; transform: none; width: min(560px, 100% - 32px); margin: 40px auto 0; text-align: center; padding: 0; }
 .rm .cta { justify-content: center; }
 
+
+.news { display: inline-flex; align-items: center; gap: 9px; padding: 5px 14px 5px 5px; border: 1px solid var(--hair-2); border-radius: 999px; color: #fff; text-decoration: none; font-size: 13.5px; font-weight: 500; white-space: nowrap; }
+.news b { background: #fff; color: #000; border-radius: 999px; padding: 2px 9px; font-size: 12px; font-weight: 700; }
+.news:hover { border-color: #fff; color: #fff; }
+#chess .lead { margin-bottom: 40px; }
+#chess .cta { margin-top: 0; }
+.chess-shot { display: block; border-radius: 14px; overflow: hidden; border: 1px solid var(--hair-2); margin-bottom: 40px; }
+.chess-shot img { display: block; width: 100%; height: auto; }
+.chess-shot:hover { border-color: #fff; }
+@media (max-width: 760px) { .news span { display: none; } .news { padding-right: 5px; } }
+
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -358,6 +369,7 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
     <a role="tab" href="#overview" data-tab="overview" aria-selected="true">Overview</a>
     <a role="tab" href="#compare" data-tab="compare" aria-selected="false">Compare</a>
   </nav>
+  <a class="news" href="https://sacon1s.github.io/blizzard.chess/"><b>New</b><span>Blizzard Chess is out now</span></a>
   <a class="btn line slim" href="play.html">Play</a>
 </header>
 
@@ -387,6 +399,23 @@ h2 { margin: 0; font: 700 clamp(40px, 6.2vw, 92px)/.94 var(--disp); font-stretch
           </div>
         </div>
         <a class="cue" id="cue" href="#download" aria-label="Scroll down"><span></span></a>
+      </div>
+    </section>
+
+    <section class="sec" id="chess">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>Blizzard Chess</h2>
+          <p class="ver-big">out <b>now</b></p>
+        </div>
+        <p class="lead">A free chess site built on Blizzard. Play people online with ratings, take on ten Blizzard bots from beginner to full strength, review every game with the engine, solve puzzles and join hourly arenas. No ads, nothing to pay.</p>
+        <a class="chess-shot" href="https://sacon1s.github.io/blizzard.chess/"><img src="assets/blizzard-chess.webp" width="1680" height="1245" loading="lazy" alt="Blizzard Chess: a game against the Expert bot with the coach rating each move"></a>
+        <div class="cta">
+          <a class="btn solid big" href="https://sacon1s.github.io/blizzard.chess/">
+            <svg><use href="#h-board"/></svg>
+            <span><b>Play Blizzard Chess</b><small>free, in the browser</small></span>
+          </a>
+        </div>
       </div>
     </section>
 

@@ -19,6 +19,8 @@
   <a href="#how-it-works"><b>How it works</b></a>
 </p>
 
+> **New: [Blizzard Chess](https://sacon1s.github.io/blizzard.chess/) is out now.** A free chess site built on Blizzard: play people online with ratings, ten Blizzard bots, game review with the engine, puzzles and hourly arenas.
+
 <br>
 
 Blizzard is a chess engine written from scratch, with no third-party code: the search is written in C and runs
