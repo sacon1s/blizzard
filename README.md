@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="assets/banner.png" alt="Blizzard: a chess engine with a neural network, written from scratch in JavaScript" width="100%">
+  <img src="assets/banner.png" alt="Blizzard: a chess engine with a neural network, written from scratch in C" width="100%">
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Version 1.0" src="https://img.shields.io/badge/version-1.0-ffffff?style=for-the-badge&labelColor=000000"></a>
+  <a href="../../releases/latest"><img alt="Version 1.0.1" src="https://img.shields.io/badge/version-1.0.1-ffffff?style=for-the-badge&labelColor=000000"></a>
   <img alt="UCI engine" src="https://img.shields.io/badge/protocol-UCI-ffffff?style=for-the-badge&labelColor=000000">
   <img alt="Windows, macOS, Linux" src="https://img.shields.io/badge/runs%20on-Windows%2C%20macOS%2C%20Linux-ffffff?style=for-the-badge&labelColor=000000">
-  <img alt="+65 Elo over 0.9" src="https://img.shields.io/badge/vs%200.9-%2B65%20Elo-ffffff?style=for-the-badge&labelColor=000000">
+  <img alt="+17 Elo over 1.0" src="https://img.shields.io/badge/vs%201.0-%2B17%20Elo-ffffff?style=for-the-badge&labelColor=000000">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-ffffff?style=for-the-badge&labelColor=000000"></a>
 </p>
 
@@ -24,8 +24,9 @@
 
 <br>
 
-Blizzard is a chess engine written from scratch, with no third-party code: the search is written in C and runs
-as a native program on several cores, or in the browser as WebAssembly; everything around it is JavaScript. It plugs into
+Blizzard is a chess engine written from scratch in C, with no third-party code. The programs for Windows and Linux
+are native: search, neural network and the UCI protocol are all C, on several cores. In the browser the same C core
+runs as WebAssembly, and the website around it is JavaScript. It plugs into
 Arena, Cute Chess, En Croissant and any other program that speaks UCI, the same way Stockfish does.
 Or you can play it in the browser, at ten levels from beginner to full strength, and let it review
 your games from chess.com and lichess.
@@ -42,8 +43,8 @@ by Stockfish searches, 36.8 million of them from Blizzard's own games.
 
 | | File | Size | What you need |
 |---|---|---|---|
-| **Windows** | [`blizzard-1.0-windows.zip`](../../releases/latest) | 2.9 MB | Windows 10 or 11, 64-bit. Nothing to install. |
-| **Linux, macOS, others** | [`blizzard-1.0-universal.zip`](../../releases/latest) | 5.5 MB | Linux: nothing to install. macOS and others: [Node.js](https://nodejs.org) 18 or newer |
+| **Windows** | [`blizzard-1.0.1-windows.zip`](../../releases/latest) | 2.9 MB | Windows 10 or 11, 64-bit. Nothing to install. |
+| **Linux, macOS, others** | [`blizzard-1.0.1-universal.zip`](../../releases/latest) | 5.5 MB | Linux: nothing to install. macOS and others: [Node.js](https://nodejs.org) 18 or newer |
 
 Unpack the archive into any folder. Blizzard has no board of its own: double-clicking `blizzard.exe`
 only opens a console window where the engine waits for commands. Add it to a chess program instead.
@@ -109,6 +110,7 @@ the same book openings, each played with both colors.
 
 | Match | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|
+| **1.0.1** vs 1.0, 1 core | 400 | +88 =243 −69 | 52.4% | **+17** (−4 to +37) |
 | **1.0** vs 0.9, 1 core | 200 | +64 =109 −27 | 59.3% | **+65** (+31 to +100) |
 | **0.9** vs 0.8, 1 core | 200 | +54 =109 −37 | 54.2% | **+30** (−3 to +62) |
 | **0.8** vs 0.7, 2 cores | 100 | +43 =53 −4 | 69.5% | **+143** (+100 to +191) |
@@ -123,7 +125,7 @@ the same book openings, each played with both colors.
 And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 <p align="center">
-  <img src="assets/strength.png" alt="Score against Stockfish by version. At Stockfish 2800: 0.1 scores 18%, 0.2 scores 34%, 0.3 scores 47%, 0.4 scores 61%, 0.5 scores 65%, 0.6 scores 74%, 0.7 scores 81%, 0.8 scores 93%, 0.9 scores 90%, 1.0 scores 95%." width="100%">
+  <img src="assets/strength.png" alt="Score against Stockfish, last five versions. At Stockfish 2800: 0.7 scores 81%, 0.8 scores 93%, 0.9 scores 90%, 1.0 scores 95%, 1.0.1 scores 97%. At Stockfish 3190: 0.7 scores 50%, 0.8 and 0.9 score 60%, 1.0 scores 63%, 1.0.1 scores 65%." width="100%">
 </p>
 
 <details>
@@ -132,6 +134,8 @@ And against Stockfish 19, limited to a set rating with `UCI_Elo`:
 
 | Version | Opponent | Games | Result | Score | Elo difference (95% interval) |
 |---|---|---|---|---|---|
+| 1.0.1 (2 cores) | Stockfish 2800 | 30 | +28 =2 −0 | 97% | +585 (+429 to +798) |
+| 1.0.1 (2 cores) | Stockfish 3190 | 30 | +13 =13 −4 | 65% | +108 (+18 to +213) |
 | 1.0 (2 cores) | Stockfish 2800 | 30 | +27 =3 −0 | 95% | +512 (+375 to +798) |
 | 1.0 (2 cores) | Stockfish 3190 | 30 | +11 =16 −3 | 63% | +95 (+14 to +187) |
 | 0.9 (2 cores) | Stockfish 2800 | 30 | +25 =4 −1 | 90% | +382 (+257 to +729) |
@@ -192,7 +196,10 @@ killers, history, countermoves, capture history and continuation history one, tw
 Correction histories adjust the static evaluation by how far off it was in earlier positions with
 the same pawn structure, the same placement of each side's pieces (since 0.7) and the same last two
 moves (since 1.0). Since 1.0 the transposition table also remembers which positions were on the
-principal variation, and those are reduced less.
+principal variation, and those are reduced less. Since 1.0.1 the history of quiet moves is kept separately for
+squares the opponent attacks and squares it doesn't, a move that takes a piece out of an attack by a weaker
+piece is tried earlier, weak quiet moves are pruned by the depth they would actually be searched to, and the
+search parameters were retuned with SPSA.
 
 **Evaluation.** An NNUE-style network, 3072 → 2×256 → 1. Each side sees the board from its own
 perspective, through one of four input sets chosen by where its own king stands, with the board
@@ -234,6 +241,7 @@ gave +44 at equal time, and fine-tuning the network once more on all positions a
 
 | Version | What changed | vs previous |
 |---|---|---|
+| **1.0.1** | Smarter move ordering: history aware of attacked squares, escaping attacks first; search retuned | +17 Elo |
 | **1.0** | Stronger search; integer network output, a third faster; network fine-tuned further | +65 Elo |
 | **0.9** | Network fine-tuned on 48 M positions, 36.8 M from Blizzard's own games scored by Stockfish 17 | +30 Elo |
 | **0.8** | Native engine for Windows and Linux, several cores at once; evaluations on Stockfish's scale | +143 Elo on 2 cores |
