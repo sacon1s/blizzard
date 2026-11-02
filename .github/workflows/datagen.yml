@@ -1,0 +1,63 @@
+# Сбор позиций для обучения сети Blizzard на серверах GitHub (бесплатно для открытых репозиториев).
+# Запуск: вкладка Actions → «Сбор позиций» → Run workflow. Каждый сервер играет сам с собой заданное
+# число часов, позиции появляются файлами (Artifacts) внизу страницы запуска.
+name: Сбор позиций
+
+on:
+  workflow_dispatch:
+    inputs:
+      machines:
+        description: Сколько серверов сразу (1–20)
+        default: "8"
+      hours:
+        description: Часов на каждом сервере (до 5.5)
+        default: "5.5"
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      list: ${{ steps.m.outputs.list }}
+      hours: ${{ steps.m.outputs.hours }}
+    steps:
+      - id: m
+        env:
+          MACHINES: ${{ inputs.machines }}
+          HOURS: ${{ inputs.hours }}
+        run: |
+          python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+          import json, os
+          n = max(1, min(20, int(os.environ["MACHINES"])))
+          h = max(0.05, min(5.5, float(os.environ["HOURS"])))
+          print("list=" + json.dumps(list(range(1, n + 1))))
+          print(f"hours={h}")
+          EOF
+
+  collect:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix:
+        n: ${{ fromJSON(needs.plan.outputs.list) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/datagen
+      - name: Сбор позиций
+        env:
+          BLZ_SEED: ${{ github.run_id }}${{ matrix.n }}
+          HOURS: ${{ needs.plan.outputs.hours }}
+        run: |
+          chmod +x tools/datagen/blizzard-data-linux
+          tools/datagen/blizzard-data-linux self "pos-${{ matrix.n }}" "$HOURS" "$(nproc)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: positions-${{ github.run_id }}-${{ matrix.n }}
+          path: pos-*.bin
+          retention-days: 14
+          if-no-files-found: error
