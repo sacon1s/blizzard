@@ -20,7 +20,7 @@
   <a href="#how-it-works"><b>How it works</b></a>
 </p>
 
-> **New: [Blizzard Chess](https://sacon1s.github.io/blizzard.chess/) is out now.** A free chess site built on Blizzard: play people online with ratings, ten Blizzard bots, game review with the engine, puzzles and hourly arenas.
+> **[Blizzard Chess](https://sacon1s.github.io/blizzard.chess/) is closed for a rebuild.** Our free chess site built on Blizzard is being redone from scratch and will be back soon. Until then, [play Blizzard in the browser](https://sacon1s.github.io/blizzard/play.html).
 
 <br>
 
