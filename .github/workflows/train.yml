@@ -73,7 +73,11 @@ jobs:
       - name: Позиции data-1
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download data-1 -R "${{ github.repository }}" -D data && ls -l data | tail -n +2 | wc -l && du -sh data
+        run: |
+          gh release download data-1 -R "${{ github.repository }}" -D data
+          # позиции, собранные на своём компьютере, если они загружены в релиз data-2
+          gh release download data-2 -R "${{ github.repository }}" -D data -p "*.bin" || echo "релиза data-2 нет"
+          ls -l data && du -sh data
       - name: Обучение
         env:
           V: ${{ matrix.v }}
