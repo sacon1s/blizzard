@@ -1,0 +1,126 @@
+# Обучение сети Blizzard на серверах GitHub. Запускается само после «Сбора позиций» (если позиций собрано
+# много) или вручную: Actions → «Обучение сети» → Run workflow с номером запуска сбора.
+# Позиции: файлы запуска сбора + релиз data-1. Готовые сети попадают в ветку nets (папка с номером запуска сбора).
+name: Обучение сети
+
+on:
+  workflow_run:
+    workflows: ["Сбор позиций"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      data_run:
+        description: Номер запуска «Сбор позиций», чьи позиции брать
+        required: true
+      variants:
+        description: Какие сети учить (через запятую из ft256, h256, h384, h512)
+        default: "ft256,h256,h384,h512"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  plan:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'cancelled'
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.p.outputs.ok }}
+      run: ${{ steps.p.outputs.run }}
+      variants: ${{ steps.p.outputs.variants }}
+    steps:
+      - id: p
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          EV_RUN: ${{ github.event.workflow_run.id }}
+          IN_RUN: ${{ inputs.data_run }}
+          IN_VAR: ${{ inputs.variants }}
+        run: |
+          if [ "$EVENT" = workflow_dispatch ]; then RUN="$IN_RUN"; VAR="$IN_VAR"; else RUN="$EV_RUN"; VAR="ft256,h256,h384,h512"; fi
+          case "$RUN" in ''|*[!0-9]*) echo "Неверный номер запуска: $RUN"; exit 1;; esac
+          SIZE=$(gh api "repos/$REPO/actions/runs/$RUN/artifacts?per_page=100" --jq '[.artifacts[] | select(.name | startswith("positions-")) | .size_in_bytes] | add // 0')
+          echo "Позиции запуска $RUN: $((SIZE / 1048576)) МБ в архивах"
+          OK=yes
+          # пробные короткие запуски сбора сами обучение не запускают
+          if [ "$EVENT" != workflow_dispatch ] && [ "$SIZE" -lt 300000000 ]; then OK=no; fi
+          if [ "$SIZE" -eq 0 ]; then OK=no; fi
+          LIST=$(python3 -c "import json,sys; v=[x.strip() for x in sys.argv[1].split(',') if x.strip() in ('ft256','h256','h384','h512','test')]; print(json.dumps(v))" "$VAR")
+          [ "$LIST" = "[]" ] && OK=no
+          { echo "ok=$OK"; echo "run=$RUN"; echo "variants=$LIST"; } >> "$GITHUB_OUTPUT"
+
+  train:
+    needs: plan
+    if: needs.plan.outputs.ok == 'yes'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix:
+        v: ${{ fromJSON(needs.plan.outputs.variants) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/train
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ needs.plan.outputs.run }}
+          github-token: ${{ github.token }}
+          pattern: positions-*
+          merge-multiple: true
+          path: data
+      - name: Позиции data-1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download data-1 -R "${{ github.repository }}" -D data && ls -l data | tail -n +2 | wc -l && du -sh data
+      - name: Обучение
+        env:
+          V: ${{ matrix.v }}
+        run: |
+          chmod +x tools/train/trainer-linux
+          FILES=$(ls data/*.bin | paste -sd,)
+          case "$V" in
+            ft256) A="--hidden 256 --epochs 8 --lr 1e-4 --lr-end 0.01 --init tools/train/current.raw" ;;
+            h256)  A="--hidden 256 --epochs 14 --lr 1e-3" ;;
+            h384)  A="--hidden 384 --epochs 14 --lr 1e-3" ;;
+            h512)  A="--hidden 512 --epochs 14 --lr 1e-3" ;;
+            test)  A="--hidden 256 --epochs 1 --lr 1e-3 --limit 300000" ;;
+            *) echo "Неизвестный вариант $V"; exit 1 ;;
+          esac
+          mkdir -p out
+          # не дольше 5 ч 20 мин: лучшая сеть сохраняется после каждой эпохи
+          timeout 19200 tools/train/trainer-linux train "$FILES" out $A --kb 4 --sched cosine --ksf 0.0064 --threads "$(nproc)" --test tools/train/hold.bin 2>&1 | tee out/train.log || true
+          test -f out/best.raw
+          LAST=$(ls out/epoch*.raw 2>/dev/null | sort -V | tail -1); [ -n "$LAST" ] && cp "$LAST" out/last.raw
+          rm -f out/epoch*.raw
+      - uses: actions/upload-artifact@v4
+        with:
+          name: net-${{ matrix.v }}
+          path: out/
+          retention-days: 14
+
+  publish:
+    needs: [plan, train]
+    if: always() && needs.plan.outputs.ok == 'yes'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: net-*
+          path: nets
+      - name: В ветку nets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN: ${{ needs.plan.outputs.run }}
+          REPO: ${{ github.repository }}
+        run: |
+          ls -R nets
+          git init -q pub && cd pub
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}"
+          if git fetch -q --depth 1 origin nets; then git checkout -q -b nets FETCH_HEAD; else git checkout -q --orphan nets; fi
+          mkdir -p "$RUN"
+          for d in ../nets/net-*; do v=${d##*/net-}; rm -rf "$RUN/$v"; cp -r "$d" "$RUN/$v"; done
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Сети на позициях запуска $RUN"
+          git push -q origin nets
