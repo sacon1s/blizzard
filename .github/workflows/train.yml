@@ -1,6 +1,7 @@
-# Обучение сети Blizzard на серверах GitHub. Запускается само после «Сбора позиций» (если позиций собрано
-# много) или вручную: Actions → «Обучение сети» → Run workflow с номером запуска сбора.
-# Позиции: файлы запуска сбора + релиз data-1. Готовые сети попадают в ветку nets (папка с номером запуска сбора).
+# Обучение сети Blizzard на серверах GitHub. Запускается само, когда закончился последний из идущих
+# «Сборов позиций», или вручную: Actions → «Обучение сети» → Run workflow.
+# Позиции: релизы data-1 и data-2 (если есть) + все сборы, чьи файлы ещё хранятся (сначала самые новые,
+# всего не больше 300 млн позиций — столько помещается в память сервера). Готовые сети — в ветке nets.
 name: Обучение сети
 
 on:
@@ -9,9 +10,9 @@ on:
     types: [completed]
   workflow_dispatch:
     inputs:
-      data_run:
-        description: Номер запуска «Сбор позиций», чьи позиции брать
-        required: true
+      data_runs:
+        description: Номера запусков «Сбор позиций» через запятую или all — все, чьи файлы ещё хранятся
+        default: "all"
       variants:
         description: Какие сети учить (через запятую из ft256, h256, h384, h512)
         default: "ft256,h256,h384,h512"
@@ -26,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       ok: ${{ steps.p.outputs.ok }}
-      run: ${{ steps.p.outputs.run }}
+      runs: ${{ steps.p.outputs.runs }}
       variants: ${{ steps.p.outputs.variants }}
     steps:
       - id: p
@@ -34,21 +35,32 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           EVENT: ${{ github.event_name }}
-          EV_RUN: ${{ github.event.workflow_run.id }}
-          IN_RUN: ${{ inputs.data_run }}
+          IN_RUNS: ${{ inputs.data_runs }}
           IN_VAR: ${{ inputs.variants }}
         run: |
-          if [ "$EVENT" = workflow_dispatch ]; then RUN="$IN_RUN"; VAR="$IN_VAR"; else RUN="$EV_RUN"; VAR="ft256,h256,h384,h512"; fi
-          case "$RUN" in ''|*[!0-9]*) echo "Неверный номер запуска: $RUN"; exit 1;; esac
-          SIZE=$(gh api "repos/$REPO/actions/runs/$RUN/artifacts?per_page=100" --jq '[.artifacts[] | select(.name | startswith("positions-")) | .size_in_bytes] | add // 0')
-          echo "Позиции запуска $RUN: $((SIZE / 1048576)) МБ в архивах"
           OK=yes
-          # пробные короткие запуски сбора сами обучение не запускают
-          if [ "$EVENT" != workflow_dispatch ] && [ "$SIZE" -lt 300000000 ]; then OK=no; fi
-          if [ "$SIZE" -eq 0 ]; then OK=no; fi
+          if [ "$EVENT" = workflow_dispatch ]; then SEL="$IN_RUNS"; VAR="$IN_VAR"; else SEL=all; VAR="ft256,h256,h384,h512"; fi
+          if [ "$EVENT" != workflow_dispatch ]; then
+            BUSY=$(gh api "repos/$REPO/actions/workflows/datagen.yml/runs?per_page=30" --jq '[.workflow_runs[] | select(.status != "completed")] | length')
+            if [ "$BUSY" != 0 ]; then echo "Ещё идёт сбор ($BUSY) — обучение начнётся после него"; OK=no; fi
+          fi
+          # запуски сбора (сначала новые) и объём их файлов
+          gh api "repos/$REPO/actions/workflows/datagen.yml/runs?per_page=50&status=completed" --jq '.workflow_runs[].id' > all_runs.txt
+          : > runs.txt
+          for id in $(cat all_runs.txt); do
+            if [ "$SEL" != all ] && ! echo ",$SEL," | tr -d ' ' | grep -q ",$id,"; then continue; fi
+            SIZE=$(gh api "repos/$REPO/actions/runs/$id/artifacts?per_page=100" --jq '[.artifacts[] | select((.name | startswith("positions-")) and (.expired | not)) | .size_in_bytes] | add // 0')
+            echo "Сбор $id: $((SIZE / 1048576)) МБ в архивах"
+            # пробные короткие сборы не берём
+            if [ "$SEL" = all ] && [ "$SIZE" -lt 100000000 ]; then continue; fi
+            [ "$SIZE" -gt 0 ] && echo "$id" >> runs.txt
+          done
+          RUNS=$(paste -sd' ' runs.txt)
+          [ -z "$RUNS" ] && OK=no
           LIST=$(python3 -c "import json,sys; v=[x.strip() for x in sys.argv[1].split(',') if x.strip() in ('ft256','h256','h384','h512','test')]; print(json.dumps(v))" "$VAR")
           [ "$LIST" = "[]" ] && OK=no
-          { echo "ok=$OK"; echo "run=$RUN"; echo "variants=$LIST"; } >> "$GITHUB_OUTPUT"
+          echo "Сборы для обучения: $RUNS"
+          { echo "ok=$OK"; echo "runs=$RUNS"; echo "variants=$LIST"; } >> "$GITHUB_OUTPUT"
 
   train:
     needs: plan
@@ -60,41 +72,54 @@ jobs:
       matrix:
         v: ${{ fromJSON(needs.plan.outputs.variants) }}
     steps:
+      - name: Место на диске
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h /
       - uses: actions/checkout@v4
         with:
           sparse-checkout: tools/train
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: ${{ needs.plan.outputs.run }}
-          github-token: ${{ github.token }}
-          pattern: positions-*
-          merge-multiple: true
-          path: data
-      - name: Позиции data-1
+      - name: Позиции
         env:
           GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUNS: ${{ needs.plan.outputs.runs }}
         run: |
-          gh release download data-1 -R "${{ github.repository }}" -D data
+          CAP=$((300000000 * 32))
+          mkdir -p data/rel
+          gh release download data-1 -R "$REPO" -D data/rel
           # позиции, собранные на своём компьютере, если они загружены в релиз data-2
-          gh release download data-2 -R "${{ github.repository }}" -D data -p "*.bin" || echo "релиза data-2 нет"
-          ls -l data && du -sh data
+          gh release download data-2 -R "$REPO" -D data/rel -p "*.bin" || echo "релиза data-2 нет"
+          total() { find data -name '*.bin' -printf '%s\n' | awk '{s+=$1} END {print s+0}'; }
+          for id in $RUNS; do
+            for a in $(gh api "repos/$REPO/actions/runs/$id/artifacts?per_page=100" --jq '.artifacts[] | select((.name | startswith("positions-")) and (.expired | not)) | .name'); do
+              [ "$(total)" -ge "$CAP" ] && break 2
+              gh run download "$id" -R "$REPO" -n "$a" -D "data/$a"
+            done
+          done
+          find data -name '*.bin' | sort > files.txt
+          echo "Файлов: $(wc -l < files.txt), позиций: $(( $(total) / 32 ))"
+          df -h /
       - name: Обучение
         env:
           V: ${{ matrix.v }}
         run: |
           chmod +x tools/train/trainer-linux
-          FILES=$(ls data/*.bin | paste -sd,)
+          FILES=$(paste -sd, files.txt)
+          N=$(( $(cat files.txt | xargs stat -c %s | awk '{s+=$1} END {print s+0}') / 32 ))
+          [ "$N" -gt 300000000 ] && N=300000000
+          # эпох столько, чтобы обучение уложилось в ~4,5 часа
+          ep() { E=$(( $1 / N )); [ "$E" -gt "$2" ] && E=$2; [ "$E" -lt 3 ] && E=3; echo $E; }
           case "$V" in
-            ft256) A="--hidden 256 --epochs 8 --lr 1e-4 --lr-end 0.01 --init tools/train/current.raw" ;;
-            h256)  A="--hidden 256 --epochs 14 --lr 1e-3" ;;
-            h384)  A="--hidden 384 --epochs 14 --lr 1e-3" ;;
-            h512)  A="--hidden 512 --epochs 14 --lr 1e-3" ;;
+            ft256) A="--hidden 256 --epochs $(ep 4500000000 8) --lr 1e-4 --lr-end 0.01 --init tools/train/current.raw" ;;
+            h256)  A="--hidden 256 --epochs $(ep 4500000000 14) --lr 1e-3" ;;
+            h384)  A="--hidden 384 --epochs $(ep 3300000000 14) --lr 1e-3" ;;
+            h512)  A="--hidden 512 --epochs $(ep 2400000000 14) --lr 1e-3" ;;
             test)  A="--hidden 256 --epochs 1 --lr 1e-3 --limit 300000" ;;
             *) echo "Неизвестный вариант $V"; exit 1 ;;
           esac
           mkdir -p out
+          echo "позиций $N, $A" | tee out/train.log
           # не дольше 5 ч 20 мин: лучшая сеть сохраняется после каждой эпохи
-          timeout 19200 tools/train/trainer-linux train "$FILES" out $A --kb 4 --sched cosine --ksf 0.0064 --threads "$(nproc)" --test tools/train/hold.bin 2>&1 | tee out/train.log || true
+          timeout 19200 tools/train/trainer-linux train "$FILES" out $A --kb 4 --sched cosine --ksf 0.0064 --limit 300000000 --threads "$(nproc)" --test tools/train/hold.bin 2>&1 | tee -a out/train.log || true
           test -f out/best.raw
           LAST=$(ls out/epoch*.raw 2>/dev/null | sort -V | tail -1); [ -n "$LAST" ] && cp "$LAST" out/last.raw
           rm -f out/epoch*.raw
@@ -116,15 +141,18 @@ jobs:
       - name: В ветку nets
         env:
           GH_TOKEN: ${{ github.token }}
-          RUN: ${{ needs.plan.outputs.run }}
           REPO: ${{ github.repository }}
+          RUNS: ${{ needs.plan.outputs.runs }}
+          ID: ${{ github.run_id }}
         run: |
           ls -R nets
           git init -q pub && cd pub
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}"
           if git fetch -q --depth 1 origin nets; then git checkout -q -b nets FETCH_HEAD; else git checkout -q --orphan nets; fi
-          mkdir -p "$RUN"
-          for d in ../nets/net-*; do v=${d##*/net-}; rm -rf "$RUN/$v"; cp -r "$d" "$RUN/$v"; done
+          D="$(date -u +%Y-%m-%d)-$ID"
+          mkdir -p "$D"
+          echo "Сборы: $RUNS" > "$D/data.txt"
+          for d in ../nets/net-*; do v=${d##*/net-}; cp -r "$d" "$D/$v"; done
           git add -A
-          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Сети на позициях запуска $RUN"
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "Сети: обучение $ID"
           git push -q origin nets
