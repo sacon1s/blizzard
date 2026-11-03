@@ -1,7 +1,8 @@
 # Обучение сети Blizzard на серверах GitHub. Запускается само, когда закончился последний из идущих
 # «Сборов позиций», или вручную: Actions → «Обучение сети» → Run workflow.
-# Позиции: релизы data-1 и data-2 (если есть) + все сборы, чьи файлы ещё хранятся (сначала самые новые,
-# всего не больше 300 млн позиций — столько помещается в память сервера). Готовые сети — в ветке nets.
+# Позиции: релизы data-1 и data-2 (если есть) + сборы с оценками Stockfish, чьи файлы ещё хранятся (сначала
+# самые новые, всего не больше 300 млн позиций — столько помещается в память сервера). Сборы с оценками самого
+# Blizzard берутся, только если номера запусков указаны вручную. Готовые сети — в ветке nets.
 name: Обучение сети
 
 on:
@@ -28,6 +29,7 @@ jobs:
     outputs:
       ok: ${{ steps.p.outputs.ok }}
       runs: ${{ steps.p.outputs.runs }}
+      prefix: ${{ steps.p.outputs.prefix }}
       variants: ${{ steps.p.outputs.variants }}
     steps:
       - id: p
@@ -47,9 +49,11 @@ jobs:
           # запуски сбора (сначала новые) и объём их файлов
           gh api "repos/$REPO/actions/workflows/datagen.yml/runs?per_page=50&status=completed" --jq '.workflow_runs[].id' > all_runs.txt
           : > runs.txt
+          # без явных номеров — только позиции с оценками Stockfish
+          if [ "$SEL" = all ]; then PREFIX=positions-sf-; else PREFIX=positions-; fi
           for id in $(cat all_runs.txt); do
             if [ "$SEL" != all ] && ! echo ",$SEL," | tr -d ' ' | grep -q ",$id,"; then continue; fi
-            SIZE=$(gh api "repos/$REPO/actions/runs/$id/artifacts?per_page=100" --jq '[.artifacts[] | select((.name | startswith("positions-")) and (.expired | not)) | .size_in_bytes] | add // 0')
+            SIZE=$(gh api "repos/$REPO/actions/runs/$id/artifacts?per_page=100" --jq "[.artifacts[] | select((.name | startswith(\"$PREFIX\")) and (.expired | not)) | .size_in_bytes] | add // 0")
             echo "Сбор $id: $((SIZE / 1048576)) МБ в архивах"
             # пробные короткие сборы не берём
             if [ "$SEL" = all ] && [ "$SIZE" -lt 100000000 ]; then continue; fi
@@ -60,7 +64,7 @@ jobs:
           LIST=$(python3 -c "import json,sys; v=[x.strip() for x in sys.argv[1].split(',') if x.strip() in ('ft256','h256','h384','h512','test')]; print(json.dumps(v))" "$VAR")
           [ "$LIST" = "[]" ] && OK=no
           echo "Сборы для обучения: $RUNS"
-          { echo "ok=$OK"; echo "runs=$RUNS"; echo "variants=$LIST"; } >> "$GITHUB_OUTPUT"
+          { echo "ok=$OK"; echo "runs=$RUNS"; echo "prefix=$PREFIX"; echo "variants=$LIST"; } >> "$GITHUB_OUTPUT"
 
   train:
     needs: plan
@@ -82,6 +86,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUNS: ${{ needs.plan.outputs.runs }}
+          PREFIX: ${{ needs.plan.outputs.prefix }}
         run: |
           CAP=$((300000000 * 32))
           mkdir -p data/rel
@@ -90,7 +95,7 @@ jobs:
           gh release download data-2 -R "$REPO" -D data/rel -p "*.bin" || echo "релиза data-2 нет"
           total() { find data -name '*.bin' -printf '%s\n' | awk '{s+=$1} END {print s+0}'; }
           for id in $RUNS; do
-            for a in $(gh api "repos/$REPO/actions/runs/$id/artifacts?per_page=100" --jq '.artifacts[] | select((.name | startswith("positions-")) and (.expired | not)) | .name'); do
+            for a in $(gh api "repos/$REPO/actions/runs/$id/artifacts?per_page=100" --jq ".artifacts[] | select((.name | startswith(\"$PREFIX\")) and (.expired | not)) | .name"); do
               [ "$(total)" -ge "$CAP" ] && break 2
               gh run download "$id" -R "$REPO" -n "$a" -D "data/$a"
             done

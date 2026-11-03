@@ -1,6 +1,7 @@
 # Сбор позиций для обучения сети Blizzard на серверах GitHub (бесплатно для открытых репозиториев).
 # Запуск: вкладка Actions → «Сбор позиций» → Run workflow. Каждый сервер играет сам с собой заданное
 # число часов, позиции появляются файлами (Artifacts) внизу страницы запуска.
+# Оценки позиций: stockfish — Stockfish (последний выпуск, 5000 узлов), blizzard — сам Blizzard.
 name: Сбор позиций
 
 on:
@@ -12,6 +13,9 @@ on:
       hours:
         description: Часов на каждом сервере (до 5.5)
         default: "5.5"
+      labels:
+        description: Кто оценивает позиции (stockfish или blizzard)
+        default: "stockfish"
 
 permissions:
   contents: read
@@ -22,11 +26,13 @@ jobs:
     outputs:
       list: ${{ steps.m.outputs.list }}
       hours: ${{ steps.m.outputs.hours }}
+      labels: ${{ steps.m.outputs.labels }}
     steps:
       - id: m
         env:
           MACHINES: ${{ inputs.machines }}
           HOURS: ${{ inputs.hours }}
+          LABELS: ${{ inputs.labels }}
         run: |
           python3 - <<'EOF' >> "$GITHUB_OUTPUT"
           import json, os
@@ -34,6 +40,7 @@ jobs:
           h = max(0.05, min(5.5, float(os.environ["HOURS"])))
           print("list=" + json.dumps(list(range(1, n + 1))))
           print(f"hours={h}")
+          print("labels=" + ("blizzard" if os.environ.get("LABELS", "").strip() == "blizzard" else "stockfish"))
           EOF
 
   collect:
@@ -48,16 +55,31 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: tools/datagen
+      - name: Stockfish
+        if: needs.plan.outputs.labels == 'stockfish'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download -R official-stockfish/Stockfish -p "stockfish-ubuntu-x86-64-avx2.tar" -D sf
+          tar -xf sf/stockfish-ubuntu-x86-64-avx2.tar -C sf
+          SF=$(find sf -type f -name "stockfish-ubuntu-x86-64-avx2" | head -1)
+          chmod +x "$SF" && echo "SF=$PWD/$SF" >> "$GITHUB_ENV"
+          echo uci | "$SF" | grep "id name"
       - name: Сбор позиций
         env:
           BLZ_SEED: ${{ github.run_id }}${{ matrix.n }}
           HOURS: ${{ needs.plan.outputs.hours }}
+          LABELS: ${{ needs.plan.outputs.labels }}
         run: |
           chmod +x tools/datagen/blizzard-data-linux
-          tools/datagen/blizzard-data-linux self "pos-${{ matrix.n }}" "$HOURS" "$(nproc)"
+          if [ "$LABELS" = stockfish ]; then
+            tools/datagen/blizzard-data-linux selfplay "$SF" "pos-${{ matrix.n }}" "$HOURS" "$(nproc)" 5000
+          else
+            tools/datagen/blizzard-data-linux self "pos-${{ matrix.n }}" "$HOURS" "$(nproc)"
+          fi
       - uses: actions/upload-artifact@v4
         with:
-          name: positions-${{ github.run_id }}-${{ matrix.n }}
+          name: positions-${{ needs.plan.outputs.labels == 'stockfish' && 'sf-' || '' }}${{ github.run_id }}-${{ matrix.n }}
           path: pos-*.bin
           retention-days: 14
           if-no-files-found: error
