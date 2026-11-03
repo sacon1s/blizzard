@@ -62,9 +62,9 @@ jobs:
         run: |
           mkdir -p sf
           gh release view -R official-stockfish/Stockfish --json tagName,assets --jq '.tagName, .assets[].name' || true
-          if gh release download -R official-stockfish/Stockfish -p "*ubuntu*x86-64-avx2*" -D sf; then
+          if gh release download -R official-stockfish/Stockfish -p "stockfish-linux-x86-64-universal*" -D sf || gh release download -R official-stockfish/Stockfish -p "*ubuntu*x86-64-avx2*" -D sf; then
             for f in sf/*; do case "$f" in *.tar) tar -xf "$f" -C sf ;; *.tar.gz|*.tgz) tar -xzf "$f" -C sf ;; *.zip) unzip -q "$f" -d sf ;; esac; done
-            SF=$(find sf -type f -name "stockfish*avx2*" ! -name "*.tar" ! -name "*.tar.gz" ! -name "*.tgz" ! -name "*.zip" | head -1)
+            SF=$(find sf -type f -name "stockfish*" ! -name "*.tar" ! -name "*.tar.gz" ! -name "*.tgz" ! -name "*.zip" -size +1M | head -1)
           fi
           if [ -z "$SF" ]; then sudo apt-get install -y -q stockfish > /dev/null && SF=/usr/games/stockfish; else SF="$PWD/$SF"; fi
           chmod +x "$SF" 2>/dev/null || true
